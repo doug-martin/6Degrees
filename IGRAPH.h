@@ -4,6 +4,8 @@
 #include <string>
 #include <iterator>
 #include <unordered_map>
+#include <vector>
+#include <queue>
 
 
 using namespace std;
@@ -13,12 +15,17 @@ class GRAPH
 {
     public:
     mapType adjacencyMap;
+    vector<double> visitMap;
+    queue<double> searchMap;
     int V, E;
 
     GRAPH();
     void insertEdge(double, double);
     void removeEdge(double, double);
     void printMap();
+    void lookup(double);
+    bool bfs(double, double);
+    bool visit(double);
 
 };
 
@@ -39,7 +46,7 @@ void GRAPH::removeEdge(double e1, double e2)
     double toRemove;
     do
     {
-        mapType::Const_Iterator it = adjacencyMap.find(e1);
+        mapType::const_iterator it = adjacencyMap.find(e1);
         toRemove = it->second;
         if (e2 != toRemove)
         {
@@ -57,5 +64,67 @@ void GRAPH::printMap()
         cout << "[" << it->first << ", " << it->second << "] ";
     }
     cout << endl;
+}
+
+void GRAPH::lookup(double key)
+{
+    cout << key << ": ";
+    pair<mapType::const_iterator, mapType::const_iterator> p = adjacencyMap.equal_range(key);
+    for (mapType::const_iterator i = p.first; i != p.second; ++i)
+        cout << (*i).second << " ";
+    cout << endl;
+}
+
+bool GRAPH::bfs(double src, double dest)
+{
+    bool flag = false;
+    double current;
+    pair<mapType::const_iterator, mapType::const_iterator> p;
+    mapType::const_iterator i;
+    while(!searchMap.empty())
+        searchMap.pop();
+
+    mapType::const_iterator it = adjacencyMap.find(src);
+    searchMap.push(it->first);
+    do
+    {
+        current = searchMap.front();
+        searchMap.pop();
+        if (current == dest)
+            flag = true;
+        if(visit(current))
+        {
+            p = adjacencyMap.equal_range(src);
+            for(i = p.first; i != p.second; ++i)
+            {
+                if(visit((*i).second))
+                    searchMap.push((*i).second);
+            }
+        }
+    } while(!searchMap.empty() && current != dest);
+
+    return flag;
+}
+
+bool GRAPH::visit(double src)
+{
+    bool flag = false;
+    if (visitMap.size() < src)
+    {
+        visitMap.resize(src - visitMap.size(), 0);
+        visitMap[src] = 1;
+        flag = true;
+    }
+    else
+    {
+        if (visitMap[src] = 1)
+            flag = false;
+        else
+        {
+            visitMap[src] = 1;
+            flag = true;
+        }
+    }
+    return flag;
 }
 #endif
