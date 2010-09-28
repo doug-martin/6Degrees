@@ -1,0 +1,62 @@
+[
+    {
+        "server" : "../servers/RequestServer",
+        "port" : "80",
+        "host" : "192.168.1.112",
+        "path" : "/6Degrees",
+        "GET" : {
+            "dirs" : [
+                {
+                    "path" : "/js/",
+                    "dir" : "../web/js/"
+                },
+                {
+                    "path" : "/css/",
+                    "dir" : "../web/css/"
+                }
+            ],
+            "methods" : [
+                {
+                    "handler" : "../6Degrees",
+                    "operations" : [
+                        {
+                            "method" : "findConnection",
+                            "params" : "person"
+                        },
+                        {
+                            "method" : "sendMessage",
+                            "params" : "person, message"
+                        },
+                        {
+                            "method" : "getPersonInfo",
+                            "params" : "person"
+                        },
+                        {
+                            "method" : "checkStatus"
+                        },
+                        {
+                            "method" : "getFriends",
+                            "params" : "uid"
+                        }
+                    ]
+                }
+            ]
+        },
+        "welcomeFiles" :  [
+            {
+                "path" : "/",
+                "file" : "../web/index.html"
+            }
+        ],
+        "errorFiles" : [
+            {
+                "code" : 404,                
+                "file" : "../web/error.html"
+            },
+            {
+                "code" : 405,
+                "file" : "../web/error.html"
+            }
+        ]
+    }
+]

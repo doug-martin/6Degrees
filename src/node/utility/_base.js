@@ -17,7 +17,7 @@ d._mixin = function(/*Object*/ target, /*Object*/ source) {
     var name, s, i;
     for (name in source) {
         s = source[name];
-        if (!(name in target) || (target[name] !== s && (!(name in empty) || empty[name] !== s))) {
+        if (!(name in target) || (target[name] !== s)) {
             target[name] = s;
         }
     }
@@ -36,10 +36,7 @@ d.mixin = function(/*Object*/obj, /*Object...*/props) {
 
 d._getProp = function(/*Array*/parts, /*Boolean*/create, /*Object*/context) {
     var obj = context || d.global;
-    for (var i = 0, p; obj && (p = parts[i]); i++) {
-        if (i == 0 && d._scopeMap[p]) {
-            p = d._scopeMap[p];
-        }
+    for (var i = 0, p; obj && (p = parts[i]); i++) {       
         obj = (p in obj ? obj[p] : (create ? obj[p] = {} : undefined));
     }
     return obj; // mixed
