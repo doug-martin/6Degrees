@@ -21,11 +21,21 @@ exports.getFriends = function(uid, req, res, server){
     });
 };
 
-exports.checkStatus = function(req, res, server){    
-    var cookie = server.getCookie('fbs_' + APP_ACCESS_TOKEN, req);
-    var body = JSON.stringify({isLoggedIn : cookie != null});
-    res.writeHead(200, { 'Content-Length': body.length, 'Content-Type': 'application/json'});
-    res.end(body);
+exports.checkStatus = function(req, res, server){
+    var session = server.getSession(req);
+    console.log("Session = ", session);
+    var body = {isLoggedIn : (session ? true : false)};
+    res.simpleJSON(200, session ? session.id : '', body);
+};
+
+exports.logon = function(user, password, req, res, server){
+        var session = server.createSession();
+        var obj = {
+            isLoggedIn : true,
+            user : user,
+            password : password
+        };        
+        res.simpleJSON(200, session.id, obj);
 };
 
 

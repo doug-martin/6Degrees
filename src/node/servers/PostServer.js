@@ -11,9 +11,18 @@ module.exports.PostServer = dojo.declare(null, {
 
     _handleRequest : function(req, res) {
         if (req.method === "POST") {
-            var url = url.parse(req.url, true);
-            var handler = this.postMap[url.pathname];
-            return handler.handler.apply(handler.scope || null, this._matchParams(url, handler.params));
+            var urlObj = url.parse(req.url, true);
+            var handler = this.postMap[urlObj.pathname];
+            if (handler) {
+                var session = this.getSession(req);
+                if (!handler.session || session) {
+                    req.session = session;
+                    return dojo.hitch(this, '_postRequestHandler', handler);
+                }else{
+                    this.notAuthorized(req, res);F
+                }
+            }
+            //return handler.handler.apply(handler.scope || null, this._matchPostParams(req, handler.params));
         } else {
             return this.inherited(arguments);
         }
@@ -21,5 +30,22 @@ module.exports.PostServer = dojo.declare(null, {
 
     postRequest : function (path, handler, params) {
         this.postMap[path] = {handler : handler, params : params};
+    },
+
+    _postRequestHandler : function(handler, req, res, server) {
+        req.setEncoding('utf8');
+        var params = "";
+        req.on('data', function(data) {
+            params += data;
+        });
+        req.on('end', function() {
+            var data = JSON.parse(params);
+            params = handler.params;
+            var args = dojo.map((params || "").split(","), function(name) {
+                return data[name] || null;
+            });
+            args.push(req, res, server);
+            handler.handler.apply(handler.scope || null, args);
+        });
     }
 });

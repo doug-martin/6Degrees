@@ -1,4 +1,26 @@
-body{
+@import "../js/degrees/layout/themes/Container.css";
+@import "../js/degrees/themes/Logon.css";
+
+body, head, html{
     width : 100%;
     height : 100%;
+    margin : 0px;
+    padding : 0px;
+    color : black;
+    overflow : hidden;
+}
+
+.degrees {
+    font-family : sans-serif;
+    color : #708090;
+    background: #d3d3d3 url('../images/bg.png');
+    background-position: 50% 50%;
+}
+
+.layoutContainer{
+    width : 90%;
+    height : 90%;
+    margin-right : auto;
+    margin-left : auto;
+    margin-top : 25px;
 }

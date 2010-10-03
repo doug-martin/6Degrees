@@ -27,7 +27,7 @@ exports.StaticFileServer = dojo.declare(null, (function() {
             this.errorFiles = {};
         },
 
-        staticHandler : function (filename) {
+        staticHandler : function (filename, code) {
             var body, headers;
             var content_type = this.mime.lookupExtension(extname(filename));
 
@@ -40,6 +40,7 @@ exports.StaticFileServer = dojo.declare(null, (function() {
                     if (err) {
                         console.log(sys.inspect(err), process.cwd());
                         sys.puts("Error loading " + filename);
+                        callback(err);
                     } else {
                         body = data;
                         headers = { "Content-Type": content_type
@@ -52,12 +53,17 @@ exports.StaticFileServer = dojo.declare(null, (function() {
                 });
             }
 
-            return function (req, res) {
-                loadResponseData(function () {
-                    res.writeHead(200, headers);
-                    res.end(req.method === "HEAD" ? "" : body);
+            return dojo.hitch(this, function (req, res) {
+                var _this = this;
+                loadResponseData(function (err) {
+                    if(err){                          
+                         _this.notFound(req, res);
+                    }else{
+                        res.writeHead(code, headers);
+                        res.end(req.method === "HEAD" ? "" : body);
+                    }
                 });
-            }
+            });
         },
 
         _handleRequest : function(req, res) {
@@ -77,7 +83,7 @@ exports.StaticFileServer = dojo.declare(null, (function() {
                         }
                     }
                     if (file) {
-                        return (this.files[path] = this.staticHandler(file));
+                        return (this.files[path] = this.staticHandler(file, 200));
                     }
                 }
             }
@@ -99,13 +105,13 @@ exports.StaticFileServer = dojo.declare(null, (function() {
         addFileGet : function(file) {
             if (file) {
                 console.log("Adding static file : "  + this.basePath + file.path);
-                this.files[this.basePath + file.path] = this.staticHandler(file.file);
+                this.files[this.basePath + file.path] = this.staticHandler(file.file, 200);
             }
         },
 
         addErrorFile : function(file){
             if (file) {
-                this.errorFiles[file.code] = {handler : this.staticHandler, file : this.staticHandler(file.file)};                
+                this.errorFiles[file.code] = {handler : this.staticHandler, file : this.staticHandler(file.file, file.code)};
             }
         },
 

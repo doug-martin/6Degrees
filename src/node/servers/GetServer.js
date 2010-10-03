@@ -14,16 +14,21 @@ module.exports.GetServer = dojo.declare(null, {
         if (req.method === "GET") {
             var urlObj = url.parse(req.url, true);
             var handler = this.getMap[urlObj.pathname];
-            if(handler)
-            {
-                var params = this._matchParams(urlObj, handler.params);
-                if(params.length)
-                {
-                    return dojo.hitch((handler.scope || this), handler.handler, params);
+            if (handler) {
+                var session = this.getSession(req);
+                if (!handler.session || session) {
+                    console.log('session = ', session);
+                    req.session = session;
+                    var params = this._matchParams(urlObj, handler.params);
+                    if (params.length) {
+                        return dojo.hitch((handler.scope || this), handler.handler, params);
+                    } else {
+                        return dojo.hitch((handler.scope || this), handler.handler);
+                    }
                 }else{
-                    return dojo.hitch((handler.scope || this), handler.handler);
+                    this.notAuthorized(req, res);
                 }
-            }else{
+            } else {
                 this.inherited(arguments);
             }
         } else {

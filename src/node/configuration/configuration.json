@@ -4,6 +4,20 @@
         "port" : "80",
         "host" : "192.168.1.112",
         "path" : "/6Degrees",
+        "POST" : {
+            "methods" : [
+                {
+                    "handler" : "../6Degrees",
+                    "operations" : [
+                        {
+                            "method" : "logon",
+                            "params" : "user,password",
+                            "session" : false
+                        }
+                    ]
+                }
+            ]
+        },
         "GET" : {
             "dirs" : [
                 {
@@ -13,6 +27,10 @@
                 {
                     "path" : "/css/",
                     "dir" : "../web/css/"
+                },
+                {
+                    "path" : "/images/",
+                    "dir" : "../web/images/"
                 }
             ],
             "methods" : [
@@ -21,22 +39,27 @@
                     "operations" : [
                         {
                             "method" : "findConnection",
-                            "params" : "person"
+                            "params" : "person",
+                            "session" : true
                         },
                         {
                             "method" : "sendMessage",
-                            "params" : "person, message"
+                            "params" : "person,message",
+                            "session" : true
                         },
                         {
                             "method" : "getPersonInfo",
-                            "params" : "person"
+                            "params" : "person",
+                            "session" : true
                         },
                         {
-                            "method" : "checkStatus"
+                            "method" : "checkStatus",
+                            "session" : false
                         },
                         {
                             "method" : "getFriends",
-                            "params" : "uid"
+                            "params" : "uid",
+                            "session" : true
                         }
                     ]
                 }
@@ -50,12 +73,16 @@
         ],
         "errorFiles" : [
             {
-                "code" : 404,                
+                "code" : 404,
                 "file" : "../web/error.html"
             },
             {
                 "code" : 405,
                 "file" : "../web/error.html"
+            },
+            {
+                "code" : 401,
+                "file" : "../web/unauthorized.html"
             }
         ]
     }
