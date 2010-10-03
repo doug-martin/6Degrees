@@ -17,5 +17,15 @@ dojo.mixin(degrees.Service, {
 
     sendMessage : function(){
 
+    },
+
+    logon : function(creds){
+        var req = {
+            url : "/6Degrees/logon",
+            postData : dojo.toJson(creds),
+            handleAs : 'json',
+            preventCache : true
+        };
+        return dojo.xhrPost(req);        
     }
 });
