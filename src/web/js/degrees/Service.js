@@ -1,31 +1,49 @@
 dojo.provide('degrees.Service');
 
-dojo.mixin(degrees.Service, {
+dojo.declare('degrees.Service', null, {
 
-    findConnection : function(endUser){
+	findConnection : function(endUser) {
 
-    },
+	},
 
-    checkStatus : function(){
-        var req = {
-            url : "/6Degrees/checkStatus",
-            handleAs : 'json',
-            preventCache : true
-        };
-        return dojo.xhrGet(req);       
-    },
+	checkStatus : function() {
+		var req = {
+			url : "/6Degrees/checkStatus",
+			preventCache : true
+		};
+		dojo.xhrGet(req);
+	},
 
-    sendMessage : function(){
+	sendMessage : function() {
 
-    },
+	},
 
-    logon : function(creds){
-        var req = {
-            url : "/6Degrees/logon",
-            postData : dojo.toJson(creds),
-            handleAs : 'json',
-            preventCache : true
-        };
-        return dojo.xhrPost(req);        
-    }
+	getUserInfo : function() {
+		var req = {
+			url : "/6Degrees/getInfo",			
+			handleAs : 'json',
+			preventCache : true
+		};
+		return dojo.xhrGet(req);
+	},
+
+	logon : function(creds) {
+		var req = {
+			url : "/6Degrees/login",
+			postData : dojo.toJson(creds),
+			handleAs : 'json',
+			preventCache : true
+		};
+		return dojo.xhrPost(req);
+	},
+
+	createUser : function(user) {
+		var req = {
+			url : "/6Degrees/createUser",
+			postData : dojo.toJson(user),
+			handleAs : 'json',
+			preventCache : true
+		};
+		return dojo.xhrPost(req);
+	}
 });

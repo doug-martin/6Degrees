@@ -284,7 +284,7 @@ l.mixin(d, require("./lang.js"));
 					deferred.reject(error);
 				}
 			}
-		}
+		};
 		freeze(promise);
 	};
 	d.extend(d.Deferred, {

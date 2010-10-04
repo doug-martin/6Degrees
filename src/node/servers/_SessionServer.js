@@ -2,47 +2,28 @@ var sys = require("sys");
 var url = require("url");
 var dojo = require("../utility/dojo.js");
 var queryString = require('querystring');
+var SessionManager = require('../lib/Sessions.js').SessionManager;
 DEBUG = false;
 
 exports._SessionServer = dojo.declare(null, {
 
     session : null,
+    
+    options : null,
 
-    constructor : function() {
-        this.session = {};
+    constructor : function(options) {    	
+        this.session = new SessionManager();
     },
 
-    createSession : function(res) {
-        var nId = this._getNodeSessionId();
-        var session = this.session[nId] = {
-            id : "nodeSessionId=" + nId,
-            expires : (new Date(options.expires)).toUTCString()
-        };
-        return session;
+    
+    getOrCreateSession : function(req, res) {
+    	return this.session.lookupOrCreate(req, res);
     },
-
-    getSession : function(req, res) {
-        var cookie = this.getCookie('nodeSessionId', req) || '';
-        if(cookie && !this.session[cookie]){
-
-        }
-        return this.session[cookie] || null;
-    },
-
-    addToSession : function(sessionId, key, value) {
-        var session = this.session[sessionId] || null;
-        if(session){
-            session[key] = value;
-        }
-    },  
-
-    _getNodeSessionId : function() {
-        var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/', // base64 alphabet
-                ret = '';
-        for (var bits = 24; bits > 0; --bits) {
-            ret += chars[0x3F & (Math.floor(Math.random() * 0x100000000))];
-        }
-        return ret;
+    
+    _requestHandler : function(req, res){
+    	if(dojo.indexOf(this.supportedOps, req.method) != -1) {
+    		req.session = this.getOrCreateSession(req, res);
+    		this.inherited(arguments, [req, res]);
+    	}
     }
-
 });

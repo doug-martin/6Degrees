@@ -1,15 +1,135 @@
 <div class="degreesLogon">
-    <form dojoAttachPoint='form' onsumbit='return false;' dojoType='dijit.form.Form' dojoAttachEvent='onSubmit : _onSubmit'>
-        <div class="textBox">
-            <label>Username :</label>
-            <input dojoType="dijit.form.ValidationTextBox" required='true' name="user"/>
-        </div>
-        <div class="textBox">
-            <label>Password :</label>
-            <input dojoType="dijit.form.ValidationTextBox" required='true' type="password" name="password"/>
-        </div>
-        <div class="textBox logonBox">
-        <button class="logon" dojoType="dijit.form.Button" type='submit'>Logon</button>
-        <div class="textBox">
-    </form>
+    <div dojoAttachPoint='logonPane'>
+        <form dojoAttachPoint='form' onSumbit='return false;' dojoType='dijit.form.Form' dojoAttachEvent='onSubmit : _onSubmit'>
+            <table class='table'>
+                <tr>
+                    <td colspan=2>
+                        <div class="message" dojoAttachPoint="logonMessageNode">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class='label'>
+                        Email : 
+                    </td>
+                    <td>
+                        <input dojoAttachPoint='email' name="email" dojoType="dijit.form.ValidationTextBox" regExpGen="dojox.validate.regexp.emailAddress" trim="true" required="true" invalidMessage="Invalid Email Address." />
+                    </td>
+                </tr>
+                <tr>
+                    <td class='label'>
+                        Password : 
+                    </td>
+                    <td>
+                        <input dojoType="dijit.form.ValidationTextBox" required='true' type="password" name="password"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                    </td>
+                    <td>
+                        <button class="logon label" dojoType="dijit.form.Button" type='submit'>
+                            Logon
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan='2'>
+                        <a class='createAcount' dojoAttachEvent='click:_showCreate' href="javascript:void(0);">Create Account</a>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <div dojoAttachPoint='createPane' class='dijitHidden'>
+        <form dojoAttachPoint='createForm' onSumbit='return false;' dojoType='dijit.form.Form' dojoAttachEvent='onSubmit : _onCreateSubmit'>
+            <table class='table'>
+            	<tr>
+                    <td colspan=2>
+                        <div class="message" dojoAttachPoint="createMessageNode">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class='label'>
+                        Email :
+                    </td>
+                    <td>
+                        <input dojoAttachPoint='email' name="email" dojoType="dijit.form.ValidationTextBox" regExpGen="dojox.validate.regexp.emailAddress" trim="true" required="true" invalidMessage="Invalid Email Address." />
+                    </td>
+                </tr>
+                <tr>
+                    <td class='label'>
+                        Verify Email :
+                    </td>
+                    <td>
+                        <input dojoAttachPoint='emailValidate' dojoAttachEvent='onChange:_checkEmail' dojoType="dijit.form.ValidationTextBox" regExpGen="dojox.validate.regexp.emailAddress" trim="true" required="true" invalidMessage="Invalid Email Address." />
+                    </td>
+                    <tr>
+                        <td class='label'>
+                            Password : 
+                        </td>
+                        <td>
+                            <input dojoAttachPoint='password' type="password" dojoType='dijit.form.ValidationTextBox' required='true' name='password' />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class='label'>
+                            Verify Password :
+                        </td>
+                        <td>
+                            <input dojoAttachPoint='validate' dojoAttachEvent='onChange:_checkPasswords' type="password" dojoType='dijit.form.ValidationTextBox' required='true'/>
+                        </td>
+                    </tr>
+                    <td>
+                    </td>
+                </tr>
+                <tr>
+                    <td class='label'>
+                        First Name :
+                    </td>
+                    <td colspan='3'>
+                        <input dojoType="dijit.form.ValidationTextBox" regexp='[A-Za-z]+' required='true' name="firstName" trim='true' propercase='true'/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class='label'>
+                        Last Name :
+                    </td>
+                    <td colspan='3'>
+                        <input dojoType="dijit.form.ValidationTextBox" regexp='[A-Za-z]+' required='true' name="lastName" trim='true' propercase='true'/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class='label'>
+                        Birth Date : 
+                    </td>
+                    <td>
+                        <input dojoType="dijit.form.DateTextBox" constraints='{min : "1900-01-01", max:"${today}"}' name='dateOfBirth' required='true' type='text' invalidMessage='Invalid Date.' trim='true'/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class='label'>
+                        Sex : 
+                    </td>
+                    <td>
+                        <select name='sex' dojoType="dijit.form.Select" required='true'>
+                            <option value="M">Male</option>
+                            <option value="F">Female</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan='4'>
+                        <button class="logon label" dojoType="dijit.form.Button" type='reset'>
+                            Reset
+                        </button>
+                        <button class="logon label" dojoType="dijit.form.Button" type='submit'>
+                            Create
+                        </button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
 </div>

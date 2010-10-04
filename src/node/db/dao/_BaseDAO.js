@@ -1,13 +1,13 @@
 var dojo = require('../../utility/dojo'),
-        Db = require('../lib/mongodb').Db,
-        Server = require('../lib/mongodb').Server,
+        Db = require('../../lib/mongodb').Db,
+        Server = require('../../lib/mongodb').Server,
         ObjectID = require('../../lib/mongodb/bson/bson').ObjectID;
 
 exports._BaseDAO = dojo.declare(null, {
 
     dbname : '6Degrees',
 
-    collectionName : '',    
+    _collectionName : '',    
 
     constructor : function (host, port) {
         var host = "localhost";

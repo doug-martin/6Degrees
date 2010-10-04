@@ -20,8 +20,10 @@ function resolveMethods(methodObj, httpMethod, server) {
         for (var j in operations) {
             var operation = operations[j];
             var func = operation.method;
+            var path = operation.path || "/" + func;
             var params = operation.params || "";
-            server[httpMethod.toLowerCase() + "Request"](server.basePath + '/' + func, handler[func], params, handler);
+            console.log("adding method at path " + server.basePath + path);
+            server[httpMethod.toLowerCase() + "Request"](server.basePath + path, handler[func], params, handler);
         }
     }
 }

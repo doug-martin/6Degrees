@@ -6,7 +6,12 @@
         <link rel="stylesheet" type="text/css" href="js/dojo/dijit/themes/tundra/tundra.css" />
         <link rel="stylesheet" type="text/css" href="css/6Degrees.css"/>
     </head>
-    <body class=" tundra degrees ">      
+    <body class=" tundra degrees ">
+        <div dojoType='degrees.layout.Container' class='layoutContainer' jsId='container'>
+            <div dojoType='degrees.Logon' class='degreesLayoutContainer-child'>
+            </div>
+        </div>
+        <!--<div id="fb-root"></div>-->
     </body>
     <script src="http://connect.facebook.net/en_US/all.js">
     </script>
@@ -14,7 +19,4 @@
     </script>
     <script src="/6Degrees/js/degrees/degrees.js">
     </script>
-	<script type="text/javascript">
-		dojo.addOnLoad(degrees.checkStatus);
-	</script>
 </html>

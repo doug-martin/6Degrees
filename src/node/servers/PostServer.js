@@ -1,12 +1,11 @@
 var url = require("url");
 var dojo = require("../utility/dojo.js");
 
-module.exports.PostServer = dojo.declare(null, {
-
-    postMap : {},
+module.exports.PostServer = dojo.declare(null, {    
 
     constructor : function() {
         this.supportedOps.push("POST");
+        this.postMap = {};
     },
 
     _handleRequest : function(req, res) {
@@ -14,9 +13,8 @@ module.exports.PostServer = dojo.declare(null, {
             var urlObj = url.parse(req.url, true);
             var handler = this.postMap[urlObj.pathname];
             if (handler) {
-                var session = this.getSession(req);
-                if (!handler.session || session) {
-                    req.session = session;
+                var session = req.session;
+                if (!handler.session || session.data('user')) {                    
                     return dojo.hitch(this, '_postRequestHandler', handler);
                 }else{
                     this.notAuthorized(req, res);F
