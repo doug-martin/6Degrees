@@ -37,6 +37,15 @@ dojo.declare('degrees.Service', null, {
 		return dojo.xhrPost(req);
 	},
 
+    logout : function(creds) {
+		var req = {
+			url : "/6Degrees/logout",
+			handleAs : 'json',
+			preventCache : true
+		};
+		return dojo.xhrGet(req);
+	},
+
 	createUser : function(user) {
 		var req = {
 			url : "/6Degrees/createUser",

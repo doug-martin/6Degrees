@@ -38,7 +38,7 @@ exports.login = function(email, password, req, res) {
 };
 
 exports.logout = function(req, res) {
-	req.session.destroy();
+	req.session.destroy(res);
 };
 
 exports.createUser = function(user, req, res) {

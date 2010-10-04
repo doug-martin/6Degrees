@@ -1,6 +1,6 @@
 var dojo = require("../utility/dojo.js");
 var UserDAO = require('../db/dao/User').UserDAO;
-var UserDAO = require('../db/dao/Messages').MessagesDAO;
+var MessagesDAO = require('../db/dao/Messages').MessagesDAO;
 var fb = require("../clients/Facebook").FacebookClient;
 
 var APP_ACCESS_TOKEN = '150801354942182';
@@ -23,13 +23,17 @@ exports.getInfo = function(req, res){
 	var session = req.session;
 	var id;
 	if(session && (id = session.data('user'))){
+        console.log("Retreiving user with id " + id);
 		userDAO.getUser(id, function(error, user){
+            console.log("User with id ", user);
 			if(user){
 				var retObject = dojo.mixin({}, user);
 				delete retObject.password;
 				delete retObject._id;
 				res.simpleJSON(200, retObject);
-			}
+			}else{
+                res.simpleJSON(200, {'error' : 'Error retreiving user information'});                
+            }
 		});
 	}
 };

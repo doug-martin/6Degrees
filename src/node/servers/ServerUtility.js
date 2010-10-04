@@ -44,7 +44,7 @@ exports.StaticFileServer = dojo.declare(null, (function() {
                         headers = { "Content-Type": content_type
                             , "Content-Length": body.length
                         };
-                        //if (!DEBUG) headers["Cache-Control"] = "public";                        
+                        headers["Cache-Control"] = "public";                        
                         callback();
                     }
                 });
@@ -71,7 +71,7 @@ exports.StaticFileServer = dojo.declare(null, (function() {
                 	if(!file.session || req.session.data('user')){
                 		return file.handler;
                 	}else{
-                		this.notAuhthorized(req, res);
+                		res.redirect(this.basePath + '/');
                 	}
                 } else {
                     var file;

@@ -2,7 +2,7 @@
     {
         "server" : "../servers/RequestServer",
         "port" : "80",
-        "host" : "192.168.1.116",
+        "host" : "localhost",
         "path" : "/6Degrees",
         "POST" : {
             "methods" : [
@@ -14,7 +14,7 @@
                             "params" : "email,password",
                             "session" : false
                         },
-						    {
+                        {
                             "method" : "createUser",
                             "params" : "user",
                             "session" : false
@@ -40,24 +40,28 @@
             ],
             "methods" : [
                 {
-                    "handler" : "../services/auth.js",					
+                    "handler" : "../services/auth.js",
                     "operations" : [
                         {
                             "method" : "checkStatus",
                             "session" : false,
-							"path" : "/"
-                        }                       
+                            "path" : "/"
+                        },
+                        {
+                            "method" : "logout",
+                            "session" : false                            
+                        }
                     ]
                 },
-				{
-					"handler" : "../services/user.js",
-					"operations" : [
-					 	{
+                {
+                    "handler" : "../services/user.js",
+                    "operations" : [
+                        {
                             "method" : "getFriends",
                             "params" : "uid",
                             "session" : true
                         },
-					    {
+                        {
                             "method" : "findConnection",
                             "params" : "person",
                             "session" : true
@@ -68,21 +72,21 @@
                             "session" : true
                         },
                         {
-                            "method" : "getInfo",                            
+                            "method" : "getInfo",
                             "session" : true
-                        }                    
-					]
-				}
+                        }
+                    ]
+                }
             ]
         },
-        "welcomeFiles" :  [           
-			{
+        "welcomeFiles" :  [
+            {
                 "path" : "/logon",
                 "file" : "../web/logon.html"
             },
-			{
+            {
                 "path" : "/home",
-				"session" : true,
+                "session" : true,
                 "file" : "../web/home.html"
             }
         ],

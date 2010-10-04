@@ -1,0 +1,102 @@
+.degreesUserLayoutContainer{
+
+}
+
+.degreesUserLayoutContainer .header{
+    
+    height : 50px;
+    position : relative;
+    padding-left : 25px;
+    padding-right : 25px;
+
+}
+.degreesUserLayoutContainer .footer{
+
+    height : 50px;
+    position : relative;
+    padding-left : 25px;
+    padding-right : 25px;
+
+}
+
+.degreesUserLayoutContainer .corner{
+    background: url('../../../../../images/corners.png') no-repeat;
+    position : absolute;
+    height : 50px;
+    width : 25px;
+}
+
+
+.degreesUserLayoutContainer .header .topLeft{
+    left : 0px;
+    top : 0px;
+}
+
+.degreesUserLayoutContainer .header .topRight{
+    background-position: -25px 0px;
+    right : 0px;
+    top : 0px;
+}
+
+.degreesUserLayoutContainer .footer .bottomLeft{
+    background-position: -50px 0px;
+    left : 0px;
+    top : 0px;
+}
+
+.degreesUserLayoutContainer .footer .bottomRight{
+    background-position: -75px 0px;
+    right : 0px;
+    top : 0px;
+}
+
+.degreesUserLayoutContainer .content{
+    background: url('../../../../../images/headerBg.png');
+    height : 50px;
+}
+
+.degreesUserLayoutContainer .footer .content{
+    background: url('../../../../../images/footerBg.png');
+}
+
+.degreesUserLayoutContainer .header .content .logo{
+    background: url('../../../../../images/logo.png') no-repeat;
+    width : 200px;
+    height : 50px;
+    
+}
+
+.degreesUserLayoutContainer .header .content .logout{
+    text-decoration:underline;
+    font-weight: bold;
+    cursor : pointer;
+    position : absolute;
+    right : 25px;
+    bottom : 0px;
+}
+
+
+
+.degreesUserLayoutContainer .container{
+     min-height: 80%;
+    vertical-align:middle;
+    background-color:white;
+}
+
+.degreesUserLayoutContainer .separator{
+    background : gray;
+    height : 5px;
+}
+
+.degreesUserLayoutContainer .dijitToolbar{
+    background : gray;
+    height : 30px;
+    color : white;
+    font-weight: bold;
+}
+
+.degreesUserLayoutContainer .container .degreesLayoutContainer-child{
+    margin-right : auto;
+    margin-left : auto;
+    padding : 10px;
+}

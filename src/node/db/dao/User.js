@@ -9,12 +9,12 @@ exports.UserDAO = dojo.declare(BaseDAO, {
 
 	_collectionName : 'users',
     
-    getUser : function(email, callback){    	
-    	this.findOne({'email' : email}, callback);
+    getUser : function(id, callback){
+    	this.findOne({'_id' : id}, callback);
     },
     
     createUser : function(userObj, callback){
-    	this.getUser(userObj.email, dojo.hitch(this, function(err, user){
+    	this.findOne({'email' : userObj.email}, dojo.hitch(this, function(err, user){
     		if(user){    			
     			callback({message : 'Email already is use!'});
     		}else{
