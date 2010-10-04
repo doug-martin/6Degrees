@@ -21,16 +21,16 @@ exports.checkStatus = function(req, res) {
 
 exports.login = function(email, password, req, res) {
 	var session = req.session;
-	db.verifyUser(email, password, function(isUser) {
+	db.verifyUser(email, password, function(error, user) {
 		var obj;
-		if (isUser) {
-			session.data('user', email);
+		if (user) {
+			session.data('user', user._id);
 			obj = {
 				location : '/6Degrees/home'
 			};
 		} else {
 			obj = {
-				error : isUser ? null : 'Invalid Username and Password'				
+				error : 'Invalid Username and Password'				
 			};
 		}
 		res.simpleJSON(200, obj);
@@ -44,14 +44,14 @@ exports.logout = function(req, res) {
 exports.createUser = function(user, req, res) {
 	if (user) {		
 		if (user && verifyUser(user)) {			
-			db.createUser(user, function(error) {
+			db.createUser(user, function(error, newUser) {
 				var obj;
 				if (error) {
 					obj = {
 						error : error.message
 					};
 				} else {
-					req.session.data('user', user.email);
+					req.session.data('user', newUser._id);
 					obj = {
 						location : '/6Degrees/home'
 					};
