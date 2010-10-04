@@ -24,9 +24,7 @@ exports.UserDAO = dojo.declare(BaseDAO, {
     },
     
     verifyUser : function(email, password, callback){
-    	this.findOne({"email" : email, "password" : password}, function(error, user){    		
-    		callback(user ? true : false);
-    	});
+    	this.findOne({"email" : email, "password" : password}, callback);
     }
 
 });

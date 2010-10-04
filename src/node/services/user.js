@@ -1,12 +1,14 @@
 var dojo = require("../utility/dojo.js");
 var UserDAO = require('../db/dao/User').UserDAO;
+var UserDAO = require('../db/dao/Messages').MessagesDAO;
 var fb = require("../clients/Facebook").FacebookClient;
 
 var APP_ACCESS_TOKEN = '150801354942182';
 var APP_SECRET = 'ad2230fd13e0ada3766afbe146ef633f';
 var API_KEY = '308d7b7179b56300f0cacac44ef5e39b';
 
-var db = new UserDAO();
+var userDAO = new UserDAO();
+var messagesDAO = new MessagesDAO();
 
 exports.findConnection = function() {
 };
@@ -19,17 +21,34 @@ exports.findConnection = function() {
 
 exports.getInfo = function(req, res){
 	var session = req.session;
-	var email;
-	if(session && (email = session.data('user'))){
-		db.getUser(email, function(error, user){
+	var id;
+	if(session && (id = session.data('user'))){
+		userDAO.getUser(id, function(error, user){
 			if(user){
 				var retObject = dojo.mixin({}, user);
 				delete retObject.password;
+				delete retObject._id;
 				res.simpleJSON(200, retObject);
 			}
 		});
 	}
 };
+
+exports.getMessages = function(forUid, req, res){
+	var session = req.session;
+	var id;
+	if(session &&(id = session.data('user')) != null){
+		messagesDAO.getMessagesForUser(forUid, function(error, messages){
+			var posts = messages.posts;
+			if(id != forUid){
+				posts = posts.filter(function(post){
+					return (!post.private || post.fromUid == id);
+				}, this);
+			}
+			res.simpleJSON(posts);
+		});
+	}
+}
 
 exports.getFriends = function(uid, req, res, server) {
 	var client = new fb({
