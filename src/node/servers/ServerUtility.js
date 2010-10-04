@@ -37,17 +37,14 @@ exports.StaticFileServer = dojo.declare(null, (function() {
                     return;
                 }
                 readFile(filename, function (err, data) {
-                    if (err) {
-                        console.log(sys.inspect(err), process.cwd());
-                        sys.puts("Error loading " + filename);
+                    if (err) {                                              
                         callback(err);
                     } else {
                         body = data;
                         headers = { "Content-Type": content_type
                             , "Content-Length": body.length
                         };
-                        if (!DEBUG) headers["Cache-Control"] = "public";
-                        sys.puts("static file " + filename + " loaded");
+                        //if (!DEBUG) headers["Cache-Control"] = "public";                        
                         callback();
                     }
                 });
@@ -68,22 +65,29 @@ exports.StaticFileServer = dojo.declare(null, (function() {
 
         _handleRequest : function(req, res) {
             if (req.method === "GET") {
-                var path = url.parse(req.url).pathname;
-                console.log('searching for ' + path);
+                var path = url.parse(req.url).pathname;                
                 if (this.files[path]) {
-                    return this.files[path] || dojo.hitch(this, this.notFound);
+                	var file = this.files[path];
+                	if(!file.session || req.session.data('user')){
+                		return file.handler;
+                	}else{
+                		this.notAuhthorized(req, res);
+                	}
                 } else {
                     var file;
+                    var dir;
                     for (var i in this.dirs) {
-                        var dir = this.dirs[i].dir;
+                    	dir = this.dirs[i];                    
+                        var d = dir.dir;
                         var patt = new RegExp(i);
                         if (patt.exec(path)) {
-                            file = path.replace(patt, dir);
+                            file = path.replace(patt, d);
                             break;
                         }
                     }
                     if (file) {
-                        return (this.files[path] = this.staticHandler(file, 200));
+                        this.files[path] = {handler : this.staticHandler(file, 200), session : dir.session};
+                        return this.files[path].handler;
                     }
                 }
             }
@@ -98,14 +102,13 @@ exports.StaticFileServer = dojo.declare(null, (function() {
         addDirectoryGet : function(dir) {
             if (dir) {
                 var path = this.basePath + dir.path, location = dir.dir;
-                this.dirs[dojo.regexp.escapeString(path)] = {dir : location};
+                this.dirs[dojo.regexp.escapeString(path)] = {dir : location, session : dir.session || false};
             }
         },
 
         addFileGet : function(file) {
-            if (file) {
-                console.log("Adding static file : "  + this.basePath + file.path);
-                this.files[this.basePath + file.path] = this.staticHandler(file.file, 200);
+            if (file) {                
+                this.files[this.basePath + file.path] = {handler : this.staticHandler(file.file, 200), session : file.session || false};
             }
         },
 

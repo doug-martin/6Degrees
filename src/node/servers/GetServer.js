@@ -2,12 +2,11 @@ var url = require("url");
 var dojo = require("../utility/dojo.js");
 var sys = require("sys");
 
-module.exports.GetServer = dojo.declare(null, {
-
-    getMap : {},
+module.exports.GetServer = dojo.declare(null, {    
 
     constructor : function() {
         this.supportedOps.push("GET");
+        this.getMap = {};
     },
 
     _handleRequest : function(req, res) {
@@ -15,10 +14,8 @@ module.exports.GetServer = dojo.declare(null, {
             var urlObj = url.parse(req.url, true);
             var handler = this.getMap[urlObj.pathname];
             if (handler) {
-                var session = this.getSession(req);
-                if (!handler.session || session) {
-                    console.log('session = ', session);
-                    req.session = session;
+                var session = req.session;
+                if (!handler.session || session.data('user')) {                                       
                     var params = this._matchParams(urlObj, handler.params);
                     if (params.length) {
                         return dojo.hitch((handler.scope || this), handler.handler, params);
@@ -26,7 +23,7 @@ module.exports.GetServer = dojo.declare(null, {
                         return dojo.hitch((handler.scope || this), handler.handler);
                     }
                 }else{
-                    this.notAuthorized(req, res);
+                    res.redirect(this.basePath);
                 }
             } else {
                 this.inherited(arguments);

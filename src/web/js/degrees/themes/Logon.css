@@ -1,13 +1,26 @@
-.degreesLogon{
-   width : 300px;
+.degreesLogon{   
 }
 
-.degreesLogon .textBox{
-    margin : 10px;
-    width : 250px;
+.degreesLogon .table{
+	margin-right  : auto;
+	margin-left  : auto;
 }
 
-.degreesLogon .logonBox{
-    text-align:right;
+.degreesLogon .logon{
+    float : right;
+}
+
+.degreesLogon .label{
+	font-weight : bold;
+}
+
+
+.degreesLogon .message{
+	color : red;
+	font-size : 12px;
+}
+
+.degreesLogon .createAcount{
+	color:#708090;
 }
 

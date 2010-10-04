@@ -2,16 +2,21 @@
     {
         "server" : "../servers/RequestServer",
         "port" : "80",
-        "host" : "192.168.1.112",
+        "host" : "192.168.1.116",
         "path" : "/6Degrees",
         "POST" : {
             "methods" : [
                 {
-                    "handler" : "../6Degrees",
+                    "handler" : "../services/auth.js",
                     "operations" : [
                         {
-                            "method" : "logon",
-                            "params" : "user,password",
+                            "method" : "login",
+                            "params" : "email,password",
+                            "session" : false
+                        },
+						    {
+                            "method" : "createUser",
+                            "params" : "user",
                             "session" : false
                         }
                     ]
@@ -35,9 +40,24 @@
             ],
             "methods" : [
                 {
-                    "handler" : "../6Degrees",
+                    "handler" : "../services/auth.js",					
                     "operations" : [
                         {
+                            "method" : "checkStatus",
+                            "session" : false,
+							"path" : "/"
+                        }                       
+                    ]
+                },
+				{
+					"handler" : "../services/user.js",
+					"operations" : [
+					 	{
+                            "method" : "getFriends",
+                            "params" : "uid",
+                            "session" : true
+                        },
+					    {
                             "method" : "findConnection",
                             "params" : "person",
                             "session" : true
@@ -48,27 +68,22 @@
                             "session" : true
                         },
                         {
-                            "method" : "getPersonInfo",
-                            "params" : "person",
+                            "method" : "getInfo",                            
                             "session" : true
-                        },
-                        {
-                            "method" : "checkStatus",
-                            "session" : false
-                        },
-                        {
-                            "method" : "getFriends",
-                            "params" : "uid",
-                            "session" : true
-                        }
-                    ]
-                }
+                        }                    
+					]
+				}
             ]
         },
-        "welcomeFiles" :  [
-            {
-                "path" : "/",
-                "file" : "../web/index.html"
+        "welcomeFiles" :  [           
+			{
+                "path" : "/logon",
+                "file" : "../web/logon.html"
+            },
+			{
+                "path" : "/home",
+				"session" : true,
+                "file" : "../web/home.html"
             }
         ],
         "errorFiles" : [
