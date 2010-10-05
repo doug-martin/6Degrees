@@ -1,6 +1,24 @@
 <div class='degreesUserProfile'>
-	<div>Firstname : ${firstName}</div>
-	<div>Lastname : ${lastName}</div>
-	<div>Email : ${email}</div>
-	<div>Date of Birth : ${dateOfBirth}</div>	
+   
+    <table>
+        <tr>
+            <th class='label tableHeader'>Info</th>
+            <td>
+                <table>
+                    <tr>
+                        <td class='label'>Email :</td>
+                        <td dojoAttachPoint='emailNode'></td>
+                    </tr>
+                    <tr>
+                        <td class='label'>Sex :</td>
+                        <td dojoAttachPoint='sexNode'></td>
+                    </tr>
+                    <tr>
+                        <td class='label'>Birthday :</td>
+                        <td dojoAttachPoint='birthdayNode'></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
 </div>

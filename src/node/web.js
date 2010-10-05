@@ -84,9 +84,8 @@ dojo.extend(http.ServerResponse, {
 		this.cookies.push(cookie);
 	},
 
-	clearCookie : function(name, options) {
-		options.expires = new Date(+new Date - 30 * 24 * 60 * 60 * 1000);
-		this.setCookie(name, "", options);
+	clearCookie : function(name) {		
+		this.setCookie(name, "", {expires : new Date(+new Date - 30 * 24 * 60 * 60 * 1000)});
 	},
 
 	simpleText : function(code, body) {

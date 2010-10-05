@@ -10,6 +10,16 @@ dojo.mixin(degrees, {
     checkStatus : function() {
         var service = new degrees.Service();
         service.checkStatus();        
+    },
+
+    formatDate : function(dateString, includeTime){
+        var format = {
+            datePattern : 'MMM d yyyy'
+        };
+        if(!includeTime){
+           format.selector = 'date';
+        }
+        return dojo.date.locale.format(new Date(dateString), format)
     }
 
     /*handleStatus : function(res) {

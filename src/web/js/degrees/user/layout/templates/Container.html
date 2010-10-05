@@ -1,4 +1,4 @@
-<div  class='degreesUserLayoutContainer'>
+<div class='degreesUserLayoutContainer'>
     <div class="header">
         <div class='corner topLeft'>&nbsp;</div>
         <div class="content">
@@ -8,7 +8,16 @@
         <div class='corner topRight'>&nbsp;</div>
     </div>
     <div class="separator toolbar" dojoType='dijit.Toolbar' dojoAttachPoint='toolbar'></div>
-    <div dojoAttachPoint='containerNode' class="container"></div>
+    <div class="container">
+        <div class='holder leftPane'>
+            <div dojoAttachPoint='profilePicture' dojoType='degrees.user.ProfilePicture' class='profile'></div>
+        </div>
+        <div class="holder rightPane">
+            <div class="information" dojoAttachPoint='nameNode'></div>
+            <hr/>
+            <div dojoAttachPoint="containerNode"></div>
+        </div>
+    </div>
     <div class="separator"></div>
     <div class="footer">
         <div class='corner bottomLeft'>&nbsp;</div>

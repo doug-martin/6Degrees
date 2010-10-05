@@ -6,8 +6,6 @@ dojo.require('degrees.user.Profile');
 dojo.mixin(degrees.user, {
 	init : function(){
 		var service = new degrees.Service();
-		service.getUserInfo().addCallback(function(info){
-			container.addChild(new degrees.user.Profile(dojo.mixin({title : 'Profile'},info)));
-		});
+		service.getUserInfo().addCallback(dojo.hitch(container, 'attr', 'user'));
 	}
 });

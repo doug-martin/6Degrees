@@ -3,15 +3,14 @@ var readFile = require("fs").readFile;
 var sys = require("sys");
 var url = require("url");
 var dojo = require("../utility/dojo");
-DEBUG = true;
-
 var fileServer = exports;
 
 exports.StaticFileServer = dojo.declare(null, (function() {
     function extname(path) {
         var index = path.lastIndexOf(".");
         return index < 0 ? "" : path.substring(index);
-    }
+    };
+    var DEBUG = true;
 
     return{
 
@@ -44,7 +43,7 @@ exports.StaticFileServer = dojo.declare(null, (function() {
                         headers = { "Content-Type": content_type
                             , "Content-Length": body.length
                         };
-                        headers["Cache-Control"] = "public";                        
+                        if(!DEBUG) headers["Cache-Control"] = "public";                        
                         callback();
                     }
                 });

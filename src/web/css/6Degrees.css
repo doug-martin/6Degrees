@@ -1,6 +1,7 @@
 @import "../js/degrees/layout/themes/Container.css";
 @import "../js/degrees/themes/Logon.css";
 @import "../js/degrees/user/layout/themes/Container.css";
+@import "../js/degrees/user/themes/Profile.css";
 
 body, head, html{
     width : 100%;
@@ -19,7 +20,7 @@ body, head, html{
 }
 
 .layoutContainer{
-    width : 90%;
+    width : 60%;
     height : 90%;
     margin-right : auto;
     margin-left : auto;

@@ -10,19 +10,35 @@ dojo.declare('degrees.user.layout.Container', degrees.layout.Container, {
 
     widgetsInTemplate : true,
 
+    user : null,
+
+    name : '',
+
     templateString : dojo.cache('degrees.user.layout', 'templates/Container.html'),
 
     _selectedChild : null,
 
-    addChild : function(child) {
+     attributeMap : dojo.delegate(dijit._Widget.prototype.attributeMap, {
+        name : {node : 'nameNode', type : "innerHTML"},
+    }),
+
+    addChild : function(child) {             
         this.inherited(arguments);
         var title = child.title || 'Child ' + this.getChildren().length;
-        var button = new dijit.form.Button({label : title});
+        var button = new dijit.form.Button({label : title, class:'button'});
         this.connect(button, 'onClick', dojo.partial(this._selectChild, child));
         if (!this._selectedChild) {
             this._selectChild(child);
         }
         this.toolbar.addChild(button);
+    },
+
+    _setUserAttr : function(user){
+        if(user)
+        {
+            this.attr("name", (user.firstName + ' ' + user.lastName));
+            this.addChild(new degrees.user.Profile(dojo.mixin({title : 'Profile'},{user : user})));
+        }
     },
 
     _logOut : function(){
