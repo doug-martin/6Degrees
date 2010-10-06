@@ -10,6 +10,10 @@
     float : right;
 }
 
+.degreesLogon .fb{
+    margin : .2em;
+}
+
 .degreesLogon .label{
 	font-weight : bold;
 }

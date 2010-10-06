@@ -31,11 +31,21 @@ dojo.declare('degrees.Logon', [ dijit._Widget, dijit._Templated ], {
 
 	constructor : function() {
 		this.userService = new degrees.Service();
-		var date = new Date()
-		this.today = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + 1; 
+		var date = new Date();
+		this.today = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + 1;        
+
 	},
 
 	_showCreate : function() {
+        FB.init({appId: '150801354942182', status: true, cookie: true, xfbml: true});
+        FB.Event.subscribe('auth.sessionChange', function(response) {
+            if (response.session) {
+                alert('Logged In');
+            } else {
+               alert("Error logging in");
+            }
+          });
+
 		this.attr('message', '');
 		var createPane = this.createPane, logonPane = this.logonPane;
 		var anim1 = dojo.fadeOut({

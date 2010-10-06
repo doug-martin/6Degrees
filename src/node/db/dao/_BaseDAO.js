@@ -1,4 +1,4 @@
-var dojo = require('../../utility/dojo'),
+var dojo = require('../../lib/dojo'),
         Db = require('../../lib/mongodb').Db,
         Server = require('../../lib/mongodb').Server,
         ObjectID = require('../../lib/mongodb/bson/bson').ObjectID;

@@ -1,4 +1,4 @@
-var dojo = require("../utility/dojo.js");
+var dojo = require("../lib/dojo");
 var UserDAO = require('../db/dao/User').UserDAO;
 var MessagesDAO = require('../db/dao/Messages').MessagesDAO;
 var fb = require("../clients/Facebook").FacebookClient;

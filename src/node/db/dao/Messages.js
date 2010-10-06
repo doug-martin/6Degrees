@@ -1,4 +1,4 @@
-var dojo = require('../../utility/dojo'), BaseDAO = require('./_BaseDAO')._BaseDAO, Db = require('../../lib/mongodb').Db, Server = require('../../lib/mongodb').Server;
+var dojo = require('../../lib/dojo'), BaseDAO = require('./_BaseDAO')._BaseDAO, Db = require('../../lib/mongodb').Db, Server = require('../../lib/mongodb').Server;
 
 exports.MessagesDAO = dojo.declare(BaseDAO, {
 

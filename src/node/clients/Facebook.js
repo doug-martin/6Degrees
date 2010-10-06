@@ -1,5 +1,5 @@
 var http = require('http');
-var dojo = require("../utility/dojo");
+var dojo = require("../lib/dojo");
 var sys = require("sys");
 var queryString = require('querystring');
 

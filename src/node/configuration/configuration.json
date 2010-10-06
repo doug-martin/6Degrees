@@ -1,13 +1,13 @@
 [
     {
-        "server" : "../servers/RequestServer",
+        "server" : "./servers/RequestServer",
         "port" : "80",
-        "host" : "localhost",
+        "host" : "dougamartin.com",
         "path" : "/6Degrees",
         "POST" : {
             "methods" : [
                 {
-                    "handler" : "../services/auth.js",
+                    "handler" : "../../services/auth.js",
                     "operations" : [
                         {
                             "method" : "login",
@@ -40,7 +40,7 @@
             ],
             "methods" : [
                 {
-                    "handler" : "../services/auth.js",
+                    "handler" : "../../services/auth.js",
                     "operations" : [
                         {
                             "method" : "checkStatus",
@@ -54,7 +54,7 @@
                     ]
                 },
                 {
-                    "handler" : "../services/user.js",
+                    "handler" : "../../services/user.js",
                     "operations" : [
                         {
                             "method" : "getFriends",
