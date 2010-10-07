@@ -40,10 +40,16 @@ dojo.declare('degrees.Logon', [ dijit._Widget, dijit._Templated ], {
         FB.init({appId: '150801354942182', status: true, cookie: true, xfbml: true});
         FB.Event.subscribe('auth.sessionChange', function(response) {
             if (response.session) {
-                alert('Logged In');
-            } else {
-               alert("Error logging in");
-            }
+                var dialog = new dijit.Dialog({
+                        title : 'FYI',
+                        content : 'Your Facebook information will be gathered once you <br/>'
+                                    + 'create and verify an account with us'
+                });
+                var handle = dojo.connect(dialog, 'onHide', function(){
+                    dojo.disconnect('handle');
+                    dialog.destroy();
+                });
+            } 
           });
 
 		this.attr('message', '');

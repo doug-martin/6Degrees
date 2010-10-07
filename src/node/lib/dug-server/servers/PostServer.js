@@ -26,8 +26,8 @@ module.exports.PostServer = dojo.declare(null, {
         }
     },
 
-    postRequest : function (path, handler, params) {
-        this.postMap[path] = {handler : handler, params : params};
+    postRequest : function (path, handler, session, params, scope) {
+        this.postMap[path] = {handler : handler, session : session,  params : params, scope : scope};
     },
 
     _postRequestHandler : function(handler, req, res, server) {

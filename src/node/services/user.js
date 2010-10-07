@@ -9,15 +9,25 @@ var API_KEY = '308d7b7179b56300f0cacac44ef5e39b';
 
 var userDAO = new UserDAO();
 var messagesDAO = new MessagesDAO();
+var client = new fb();
 
-exports.findConnection = function() {
+exports.findConnection = function(target, req, res) {
+    console.log('Hit it');
+    var session = req.session;
+	var id;
+	if(session && (id = session.data('user'))){
+        console.log('Searching...');
+        userDAO.sixDegrees(id, target, function(path){
+            path = path || {message : 'Path not found'};
+            res.simpleJSON(200, path);
+        });
+    }
 };
 exports.sendMessage = function() {
 };
 exports.getPersonInfo = function() {
 };
-exports.findConnection = function() {
-};
+
 
 exports.getInfo = function(req, res){
 	var session = req.session;
@@ -52,20 +62,16 @@ exports.getMessages = function(forUid, req, res){
 			res.simpleJSON(posts);
 		});
 	}
-}
+};
 
-exports.getFriends = function(uid, req, res, server) {
-	var client = new fb({
-		cookie : server.getCookie('fbs_' + APP_ACCESS_TOKEN, req)
-	});
-	var def = client.getFriends(uid);
-	def.addCallback(function(friends) {
-		var body = friends.join("\n");
-		res.writeHead(200, {
-			'Content-Length' : body.length,
-			'Content-Type' : 'text/javascript',
-			charset : 'UTF-8'
-		});
-		res.end(body);
-	});
+exports.getFriends = function(req, res) {
+    var cookie = req.getCookie('fbs_' + APP_ACCESS_TOKEN);
+    if(cookie)
+    {
+        console.log(cookie);
+        var access_token = cookie['access_token'];
+        var uid = cookie['uid'];
+	    var def = client.getFriends(uid, access_token);
+	    def.addCallback(dojo.hitch(res, res.simpleJSON, 200));
+    }
 };

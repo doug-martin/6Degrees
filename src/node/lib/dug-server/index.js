@@ -1,4 +1,10 @@
-var dojo = require("../dojo"), queryString = require('querystring'), http = require("http"), sys = require("sys"),  url = require("url"), path = require("path"), readFile = require("fs").readFile;
+var dojo = require("../dojo"),
+        queryString = require('querystring'),
+        http = require("http"),
+        sys = require("sys"),
+        url = require("url"),
+        path = require("path"),
+        readFile = require("fs").readFile;
 
 var modules = {};
 
@@ -16,10 +22,15 @@ function resolveMethods(methodObj, httpMethod, server) {
         for (var j in operations) {
             var operation = operations[j];
             var func = operation.method;
-            var path = operation.path || "/" + func;
-            var params = operation.params || "";
-            console.log("adding method at path " + server.basePath + path);
-            server[httpMethod.toLowerCase() + "Request"](server.basePath + path, handler[func], params, handler);
+            if (handler[func]) {
+                var path = operation.path || "/" + func;
+                var params = operation.params || "";
+                var session = operation.session || false;
+                console.log("adding method at path " + server.basePath + path);
+                server[httpMethod.toLowerCase() + "Request"](server.basePath + path, handler[func], session, params, handler);
+            }else{
+                throw new Error("Cannot add method " + func);
+            }
         }
     }
 }
@@ -41,7 +52,7 @@ function parseConfiguration(serverArr) {
         server = new server({basePath : path});
         if (GET) {
             var dirs = GET.dirs || null;
-            if (dirs) {                
+            if (dirs) {
                 dojo.forEach(dirs, server.addDirectoryGet, server);
             }
             resolveMethods(GET, "GET", server);
@@ -102,23 +113,36 @@ function pad(len, str, padder) {
 var _writeHeader = http.ServerResponse.prototype.writeHead;
 
 dojo.extend(http.IncomingMessage, {
-    // summary:
-    // The getCookie method.
+
     _parseCookies : function() {
-        var ret = {}, cookies;
-
-        if (this.headers.cookie && (cookies = this.headers.cookie.split(";"))) {
-
-            for (var parts, cookieName, cookie; cookies.length && (cookie = cookies.shift());) {
-                parts = cookie.split("=");
-
-                cookieName = ("" + parts[0]).replace(/^\s\s*/, '').replace(/\s\s*$/, '');
-
-                ret[cookieName] = ("" + parts[1]).replace(/^\s\s*/, '').replace(/\s\s*$/, '');
-            }
+        var cookies = {};
+        var hCookies = this.headers.cookie;
+        if (hCookies) {
+            hCookies.split(';').forEach(function(cookie) {
+                var key = cookie.substring(0, cookie.indexOf("="));
+                var val = queryString.unescape(cookie.substring(cookie.indexOf("=") + 1));
+                key = key.replace(/^\s+/, '').replace(/\s+$/, '');
+                val = val.replace(/^\s+/, '').replace(/\s+$/, '');
+                var parts = val.split("&");
+                var c = {};
+                if (parts.length > 1) {
+                    for (var i = 0; i < parts.length; i++) {
+                        var KV = parts[i].split("=");
+                        var k = KV[0].replace(/^\s\s\*/, '').replace(/\s\s*$/, '').replace('"', ''),
+                                v = KV[1].replace(/^\s\s\*/, '').replace(/\s\s*$/, '').replace('"', '');
+                        if (v) {
+                            c[ k ] = v;
+                        } else {
+                            c = k;
+                        }
+                    }
+                } else {
+                    c = val;
+                }
+                cookies[key] = c;
+            });
         }
-
-        return this.cookies = ret;
+        return (this.cookies = cookies);
     },
 
     getCookie : function(name) {

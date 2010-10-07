@@ -57,13 +57,12 @@
                     "handler" : "../../services/user.js",
                     "operations" : [
                         {
-                            "method" : "getFriends",
-                            "params" : "uid",
+                            "method" : "getFriends",                            
                             "session" : true
                         },
                         {
                             "method" : "findConnection",
-                            "params" : "person",
+                            "params" : "target",
                             "session" : true
                         },
                         {

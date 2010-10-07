@@ -5,7 +5,7 @@ var queryString = require('querystring');
 
 exports.FacebookClient = dojo.declare(null, {
 
-    host : 'api.facebook.com',
+    host : 'graph.facebook.com',
 
     client : null,
 
@@ -16,25 +16,35 @@ exports.FacebookClient = dojo.declare(null, {
         this.client = http.createClient(443, this.host, true);
     },
 
-    getFriends : function(uid) {
+     _makeRequest : function(url, params, def){
+       console.log(url + '?' +queryString.stringify(params, '&', '=', false));
+       var request = this.client.request('GET', url + '?' + queryString.stringify(params, '&', '=', false), {'host': this.host} , {'host': this.host});
+       request.on('response', dojo.hitch(this, this._handleResponse, def));
+       request.end();
+    },
+
+    getFriends : function(uid, access_token) {
         var def = new dojo.Deferred();
         console.log("Finding friends..");
-        if (this.cookie) {
-            var req = {
-                 'format' : 'json',
-                'access_token' : this.cookie['access_token'],
-                'uid' : uid
-            };
-             console.log('/method/friends.get?'+queryString.stringify(req, '&', '=', false));
-            var request = this.client.request('GET', '/method/friends.get?' + queryString.stringify(req, '&', '=', false), {'host': this.host});
-            request.on('response', dojo.hitch(this, this._handleResponse, def));
-            request.end();            
+        if (access_token && uid) {
+            this._makeRequest('/' + uid + '/friends', {'access_token' : access_token}, def);
         }else{
-             console.log("No cookie..");
             def.errback();
         }
         return def;
     },
+
+    getInfo : function(uid, access_token) {
+           var def = new dojo.Deferred();
+           console.log("Finding user info..");
+           if (access_token && uid) {
+               this._makeRequest('/' + uid, {'access_token' : access_token}, def);
+           }else{
+               def.errback();
+           }
+           return def;
+       },
+
 
     _handleResponse : function(def, response) {                 
         response.setEncoding('utf8');
@@ -43,7 +53,7 @@ exports.FacebookClient = dojo.declare(null, {
             res.push(chunk);
         });
         response.on('end', function(){
-           def.callback(res);
+           def.callback(res.join(''));
         });
     }
 

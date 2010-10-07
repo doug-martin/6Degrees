@@ -44,13 +44,13 @@ module.exports._ServerBase = dojo.declare(null, {
 
 	_matchParams : function(urlObj, params) {
 		var ret = [];
-		console.log(urlObj);
 		if (params && params != "") {
 			var query = urlObj.query || "";
 			ret = dojo.map((params || "").split(","), function(name) {
 				return query[name] || null
 			});
 		}
+        console.log(ret);
 		return ret;
 	},
 
