@@ -18,6 +18,7 @@ exports.findConnection = function(target, req, res) {
 	if(session && (id = session.data('user'))){
         console.log('Searching...');
         userDAO.sixDegrees(id, target, function(path){
+            console.log('found path');
             path = path || {message : 'Path not found'};
             res.simpleJSON(200, path);
         });

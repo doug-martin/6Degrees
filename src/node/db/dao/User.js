@@ -73,68 +73,62 @@ exports.UserDAO = dojo.declare(BaseDAO, {
     },
 
     sixDegrees : function(seeker, target, callback) {
-        var found = false, user = {_id : seeker};
-        var currDepth = 0;
-        var searchDef = new dojo.Deferred();
-        var search = function(usr, tgt, depth, path, callback) {
-            console.log("Searching ", usr);
-            if (!found) {
-                var def = this._searchChild(usr, tgt);
-                def.addCallback(dojo.hitch(this, function(results) {
-                    console.log("Checking results...");
-                    console.log(results);                    
-                    var i = 0, foundUsr = null;
-                    var length = results.length;
-                    var friendsList = [];
-                    for (i; i < length && !foundUsr; i++) {
-                        var res = results[i];
-                        console.log(res);
-                        friendsList.push(res.friend);
-                        if (res[0].found) {
-                            foundUsr = res;
-                            found = true;
+        var found = {found : false};
+        var searched = [];
+        var search = function(usr, path, callback) {
+            if (!found.found && dojo.indexOf(searched, usr._id) == -1) {
+                console.log('Searching ' + usr.name);
+                path.push(usr);
+                searched.push(usr._id);
+                var tFound = dojo.indexOf(usr.friends, target) != -1;
+                if (!tFound && path.length < 7) {
+                    console.log("Not found.");
+                    this.findBy({friends : usr._id}, {}, dojo.hitch(this, function(err, users) {
+                        if (!found.found) {
+                            console.log("Searching " + usr.name + "'s friends");
+                            var i = 0, len = users.length;
+                            for (i; i < len && !found.found; i++) {
+                                var friend = users[i];
+                                var newPath = dojo.clone(path);
+                                search(friend, newPath, callback);
+                            }
+                        }else{
+                            console.log('already found');
                         }
+                    }));
+                } else {
+                    if (tFound) {                        
+                        console.log('Found path through');
+                        console.log(path);                        
                     }
-                    if (!found && depth < 7){
-                        console.log("Not found keep searching...");
-                        friendsList.forEach(function(friend){
-                            search(friend, tgt, depth++, dojo.clone(path).push[friend._id], callback).apply(this);
-                        });
-                    }else{
-                        console.log('Found = ' + found);
-                        searchDef.callback(found ? path : null);
-                    }
-                }));
-            }else{
-                return;
+                    found.found = tFound;                    
+                    callback(tFound ? path : null);
+                }
+            } else {
+                path = null;
+                console.log('found just return');
             }
         };
         search = dojo.hitch(this, search);
-        search(user, target, 0, [], function(path) {
-            callback(path);
-        });
-    },
-
-    _searchChild : function(friend, target) {
-        var def = new dojo.Deferred();
-        this.findBy({friends : friend._id}, {}, dojo.hitch(this, function(err, users) {
-            var ret = this._search(target, users);
-            def.callback(ret);
-        }));
-        return def;
-    },
-
-    _search : function(target, friendsList) {
-        var retList = [];
-        var ret = false, length = friendsList.length;
-        for (var i = 0; i < length && !ret; i++) {
-            var friend = friendsList[i];
-            if (friend._id == target) {
-                ret = true;
+        this.findById(target, dojo.hitch(this, function(err, tgt) {
+            if (err) {
+                callback(err);
             }
-            retList.push({friend : friend, found : ret});
-        }
-        return retList;
+            tgt = new User(tgt);
+            console.log("Found target!");
+            console.log(tgt);
+            this.getUser(seeker, dojo.hitch(this, function(err, user) {
+                if (err) {
+                    callback(err);
+                }
+                console.log("Found Seeker!");
+                console.log(user);
+                search(user, [], function(path) {
+                    path && path.push(tgt);
+                    callback(path);
+                });
+            }));
+        }));
     }
 
 });

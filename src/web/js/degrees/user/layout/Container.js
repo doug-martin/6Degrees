@@ -19,7 +19,7 @@ dojo.declare('degrees.user.layout.Container', degrees.layout.Container, {
     _selectedChild : null,
 
      attributeMap : dojo.delegate(dijit._Widget.prototype.attributeMap, {
-        name : {node : 'nameNode', type : "innerHTML"},
+        name : {node : 'nameNode', type : "innerHTML"}
     }),
 
     addChild : function(child) {             
@@ -36,7 +36,7 @@ dojo.declare('degrees.user.layout.Container', degrees.layout.Container, {
     _setUserAttr : function(user){
         if(user)
         {
-            this.attr("name", (user.firstName + ' ' + user.lastName));
+            this.attr("name", user.name);
             this.addChild(new degrees.user.Profile(dojo.mixin({title : 'Profile'},{user : user})));
         }
     },
