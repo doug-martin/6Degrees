@@ -12,7 +12,7 @@ exports.FacebookClient = dojo.declare(null, {
     cookie : null,
 
     constructor : function(params){
-        dojo.mixin(this, params || {});
+        dojo.mixin(this, params || {});             
         this.client = http.createClient(443, this.host, true);
     },
 
@@ -37,7 +37,7 @@ exports.FacebookClient = dojo.declare(null, {
     getInfo : function(uid, access_token) {
            var def = new dojo.Deferred();
            console.log("Finding user info..");
-           if (access_token && uid) {
+           if (access_token && uid) {              
                this._makeRequest('/' + uid, {'access_token' : access_token}, def);
            }else{
                def.errback();
