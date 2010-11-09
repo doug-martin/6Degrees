@@ -1,0 +1,6 @@
+[submodule "src/node/lib/mongoose"]
+	path = src/node/lib/mongoose
+	url = git://github.com/LearnBoost/mongoose.git
+[submodule "src/node/lib/node_hash"]
+	path = src/node/lib/node_hash
+	url = https://github.com/Marak/node_hash.git

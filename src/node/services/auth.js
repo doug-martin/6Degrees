@@ -1,7 +1,7 @@
 var UserDAO = require('../db/dao/User').UserDAO;
 var fb = require("../clients/Facebook").FacebookClient;
 var dojo = require('../lib/dojo');
-var User = require('../db/domain/User').User;
+var User = require('../domain/User').User;
 
 
 var db = new UserDAO();

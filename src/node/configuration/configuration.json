@@ -1,8 +1,8 @@
 [
     {
         "server" : "./servers/RequestServer",
-        "port" : "80",
-        "host" : "dougamartin.com",
+        "port" : "8088",
+        "host" : "localhost",
         "path" : "/6Degrees",
         "POST" : {
             "methods" : [
