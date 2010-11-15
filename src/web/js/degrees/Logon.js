@@ -37,21 +37,7 @@ dojo.declare('degrees.Logon', [ dijit._Widget, dijit._Templated ], {
 	},
 
 	_showCreate : function() {
-        FB.init({appId: '150801354942182', status: true, cookie: true, xfbml: true});
-        FB.Event.subscribe('auth.sessionChange', function(response) {
-            if (response.session) {
-                var dialog = new dijit.Dialog({
-                        title : 'FYI',
-                        content : 'Your Facebook information will be gathered once you <br/>'
-                                    + 'create and verify an account with us'
-                });
-                var handle = dojo.connect(dialog, 'onHide', function(){
-                    dojo.disconnect('handle');
-                    dialog.destroy();
-                });
-            } 
-          });
-
+        FB.init({appId: '150801354942182', status: true, cookie: true, xfbml: true});       
 		this.attr('message', '');
 		var createPane = this.createPane, logonPane = this.logonPane;
 		var anim1 = dojo.fadeOut({
@@ -106,8 +92,7 @@ dojo.declare('degrees.Logon', [ dijit._Widget, dijit._Templated ], {
 		e.preventDefault();
 		if (this.createForm.validate() && this._checkPasswords() && this._checkEmail()) {
 			this._checkPasswords();
-			var vals = this.createForm.attr('value');
-			vals.dateOfBirth = vals.dateOfBirth.toUTCString();
+			var vals = this.createForm.attr('value');			            
 			this.userService.createUser(dojo.mixin({}, {user : vals})).addCallback(dojo.hitch(this, this._checkResponse));
 			this.onSubmit(vals);
 		}

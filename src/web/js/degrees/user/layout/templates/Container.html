@@ -7,7 +7,9 @@
         </div>
         <div class='corner topRight'>&nbsp;</div>
     </div>
-    <div class="separator toolbar" dojoType='dijit.Toolbar' dojoAttachPoint='toolbar'></div>
+    <div class="separatorTop">
+        <div class="toolbar" dojoType='dijit.Toolbar' dojoAttachPoint='toolbar'></div>        
+    </div>
     <div class="container">
         <div class='holder leftPane'>
             <div dojoAttachPoint='profilePicture' dojoType='degrees.user.ProfilePicture' class='profile'></div>
@@ -15,7 +17,8 @@
         <div class="holder rightPane">
             <div class="information" dojoAttachPoint='nameNode'></div>
             <hr/>
-            <div dojoAttachPoint="containerNode"></div>
+            <div class="containerNode" dojoAttachPoint="containerNode">                
+            </div>
         </div>
     </div>
     <div class="separator"></div>

@@ -69,7 +69,7 @@
 
 
 .degreesLayoutContainer .container{
-     min-height: 80%;
+    height: 80%;
     vertical-align:middle;
     background-color:white;
 }

@@ -51,6 +51,21 @@
                     </td>
                 </tr>
                 <tr>
+                    <td colspan="2">
+                        <h3>1. Login to FaceBook.</h3>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <fb:login-button perms='email,  user_birthday' class='logon fb'></fb:login-button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h3>2. Create account.</h3>
+                    </td>
+                </tr>
+                <tr>
                     <td class='label'>
                         Email :
                     </td>
@@ -67,7 +82,7 @@
                     </td>
                     <tr>
                         <td class='label'>
-                            Password : 
+                            Password :
                         </td>
                         <td>
                             <input dojoAttachPoint='password' type="password" dojoType='dijit.form.ValidationTextBox' required='true' name='password' />
@@ -85,41 +100,6 @@
                     </td>
                 </tr>
                 <tr>
-                    <td class='label'>
-                        First Name :
-                    </td>
-                    <td colspan='3'>
-                        <input dojoType="dijit.form.ValidationTextBox" regexp='[A-Za-z]+' required='true' name="firstName" trim='true' propercase='true'/>
-                    </td>
-                </tr>
-                <tr>
-                    <td class='label'>
-                        Last Name :
-                    </td>
-                    <td colspan='3'>
-                        <input dojoType="dijit.form.ValidationTextBox" regexp='[A-Za-z]+' required='true' name="lastName" trim='true' propercase='true'/>
-                    </td>
-                </tr>
-                <tr>
-                    <td class='label'>
-                        Birth Date : 
-                    </td>
-                    <td>
-                        <input dojoType="dijit.form.DateTextBox" constraints='{min : "1900-01-01", max:"${today}"}' name='dateOfBirth' required='true' type='text' invalidMessage='Invalid Date.' trim='true'/>
-                    </td>
-                </tr>
-                <tr>
-                    <td class='label'>
-                        Sex : 
-                    </td>
-                    <td>
-                        <select name='sex' dojoType="dijit.form.Select" required='true'>
-                            <option value="M">Male</option>
-                            <option value="F">Female</option>
-                        </select>
-                    </td>
-                </tr>
-                <tr>
                     <td colspan='4'>
                         <button class="logon label" dojoType="dijit.form.Button" type='reset'>
                             Reset
@@ -127,7 +107,6 @@
                         <button class="logon label" dojoType="dijit.form.Button" type='submit'>
                             Create
                         </button>
-                        <fb:login-button class='logon fb'></fb:login-button>
                     </td>
                 </tr>
             </table>

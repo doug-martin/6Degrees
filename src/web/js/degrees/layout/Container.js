@@ -7,5 +7,5 @@ dojo.declare('degrees.layout.Container', [dijit.layout._LayoutWidget, dijit._Tem
 
     baseClass : 'degreesLayoutContainer',
 
-    templateString : dojo.cache('degrees.layout', 'templates/Container.html')
+    templateString : dojo.cache('degrees.layout', 'templates/Container.html')       
 });

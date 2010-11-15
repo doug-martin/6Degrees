@@ -14,7 +14,7 @@ module.exports.PostServer = dojo.declare(null, {
             var handler = this.postMap[urlObj.pathname];
             if (handler) {
                 var session = req.session;
-                if (!handler.session || session.data('user')) {                    
+                if (!handler.session || session.data('user')) {
                     return dojo.hitch(this, '_postRequestHandler', handler);
                 }else{
                     this.notAuthorized(req, res);F
@@ -31,6 +31,8 @@ module.exports.PostServer = dojo.declare(null, {
     },
 
     _postRequestHandler : function(handler, req, res, server) {
+        if(handler.params)
+        {
         req.setEncoding('utf8');
         var params = "";
         req.on('data', function(data) {
@@ -45,5 +47,8 @@ module.exports.PostServer = dojo.declare(null, {
             args.push(req, res, server);
             handler.handler.apply(handler.scope || null, args);
         });
+        }else{
+            handler.handler.apply(handler.scpoe || null, [req, res, server]);
+        }
     }
 });

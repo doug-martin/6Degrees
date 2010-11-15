@@ -3,6 +3,8 @@ dojo.provide('degrees.user.Profile');
 dojo.require('dijit._Widget');
 dojo.require('dijit._Templated');
 dojo.require("dojo.date.locale");
+dojo.require("dojo.io.iframe");
+dojo.require('degrees.Service');
 
 dojo.declare('degrees.user.Profile', [dijit._Widget, dijit._Templated], {
 
@@ -16,48 +18,76 @@ dojo.declare('degrees.user.Profile', [dijit._Widget, dijit._Templated], {
 
     email : '',
 
+    title : 'Profile',
+
     templateString : dojo.cache('degrees.user', 'templates/Profile.html'),
 
-     attributeMap : dojo.delegate(dijit._Widget.prototype.attributeMap, {
+    attributeMap : dojo.delegate(dijit._Widget.prototype.attributeMap, {
         name : {node : 'nameNode', type : "innerHTML"},
         birthday : {node : 'birthdayNode', type : "innerHTML"},
         email : {node : 'emailNode', type : "innerHTML"},
         sex : {node : 'sexNode', type : "innerHTML"}
     }),
 
-    _setUserAttr : function(user){
-        if(user){
-            this.user = user;           
+    _setUserAttr : function(user) {
+        if (user) {
+            this.user = user;
             this.attr('birthday', degrees.formatDate(user.dateOfBirth, false));
             this.attr('email', user.email);
-            this.attr('sex', user.sex == 'M' ? 'Male' : 'Female');
+            this.attr('sex', user.sex);
         }
     }
 });
 
 dojo.declare('degrees.user.ProfilePicture', [dijit._Widget, dijit._Templated], {
 
-    src : '/6Degrees/images/NoPicture.png',
+    src : '/6Degrees/image/profile',
 
     baseClass : 'degreesUserProfilePicture',
 
+    uploadUrl : '/6Degrees/image/profile',
+
     templateString : "<div class='${baseClass}' dojoAttachEvent='onmouseenter:_showEdit,onmouseleave:_hideEdit'>"
             + "<img dojoAttachPoint='img' src='${src}' class='img'/>"
-            + "<span dojoAttachEvent='onclick : _edit' class='edit'></span></div>",
+            + "<span dojoAttachPoint='editNode' class='edit'><input class='fileUploader' name='upload' dojoAttachPoint='fileInput' dojoAttachEvent='onchange : _edit' type='file'/></span></div>",
 
     attributeMap : dojo.delegate(dijit._Widget.prototype.attributeMap, {
         src : {node : 'img', type : "attr"}
     }),
 
+    startup : function() {
+        if (!this._started) {
+            this.service = new degrees.Service();
+            this.inherited(arguments);
+        }
+    },
+
     _showEdit : function() {
-       dojo.addClass(this.domNode, this.baseClass+'Hover');
+        dojo.addClass(this.domNode, this.baseClass + 'Hover');
     },
 
     _hideEdit : function() {
-       dojo.removeClass(this.domNode, this.baseClass+'Hover');
+        dojo.removeClass(this.domNode, this.baseClass + 'Hover');
     },
 
-    _edit : function(){
+    _edit : function(val) {
+        this.sendForm = dojo.create('form', {enctype : "multipart/form-data", style : {opacity : 0}}, dojo.body());
+        this.sendForm.appendChild(this.fileInput);
+        dojo.io.iframe.send({
+            url: this.uploadUrl,
+            form: this.sendForm,
+            handleAs: "json",
+            handle: dojo.hitch(this, "_handleSend")
+        });
+    },
 
+    _handleSend : function(res) {
+        dojo.place(this.fileInput, this.editNode);
+        dojo.destroy(this.sendForm);
+        if(res.uploaded){
+            dojo.destroy(this.img);
+            this.img = dojo.create('img', {src : this.src + '?preventcache='+ Math.random()}, this.domNode, 'first');
+            dojo.addClass(this.img, 'img');
+        }
     }
 });

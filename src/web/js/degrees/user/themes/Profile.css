@@ -45,3 +45,12 @@
 .degreesUserProfilePictureHover .edit{
     display : block;    
 }
+
+.degreesUserProfilePictureHover .fileUploader{
+    cursor : pointer;
+    vislble : false;
+    opacity : 0;
+    filter:alpha(opacity:0);
+    width : 100%;
+    height : 100%;
+}

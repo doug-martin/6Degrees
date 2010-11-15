@@ -76,7 +76,7 @@
 }
 
 .degreesUserLayoutContainer .container {
-    min-height: 80%;
+    height: 80%;
     vertical-align: middle;
     background-color: white;
 }
@@ -84,6 +84,16 @@
 .degreesUserLayoutContainer .separator {
     background: gray;
     height: 5px;
+}
+
+.degreesUserLayoutContainer .separatorTop{
+    background: gray;
+    height: 30px; 
+}
+
+.degreesUserLayoutContainer .toolbar{
+    width : 70%;
+    display : inline-block;
 }
 
 .degreesUserLayoutContainer .dijitToolbar {
@@ -95,7 +105,7 @@
 
 .degreesUserLayoutContainer .dijitToolbar .button {
     height: 28px;
-    width: 100px;
+    min-width: 100px;
     text-align: center;
 
 }
@@ -131,13 +141,20 @@
 
 .degreesUserLayoutContainer .container .leftPane{
     width : 20%;
+    height : 100%;
 }
 
 .degreesUserLayoutContainer .container .rightPane{
     width : 70%;
+    height : 100%;
 }
 
 .degreesUserLayoutContainer .information {
     font-size: 20px;
     font-weight: bold;
+    height : 5%;
+}
+
+.degreesUserLayoutContainer .container .rightPane .containerNode{
+    height : 95%;
 }

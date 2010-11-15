@@ -205,6 +205,22 @@ dojo.extend(http.ServerResponse, {
         this.end(body);
     },
 
+    simpleHTML : function(code, body) {
+        this.writeHead(code, {
+            "Content-Type" : "text/html",
+            "Content-Length" : body.length
+        });
+        this.end(body);
+    },
+
+    image : function(body, mime){
+        this.writeHead(200, {
+            'Content-Type': mime,
+            'Content-Length': body.length
+        });        
+        this.end(body);
+    },
+
     redirect : function(location) {
         var body = "Redirecting to " + location;
         this.writeHead(302, {

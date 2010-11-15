@@ -1,0 +1,16 @@
+[submodule "src/node/lib/mongoose"]
+	path = src/node/lib/mongoose
+	url = git://github.com/LearnBoost/mongoose.git
+[submodule "src/node/lib/node_hash"]
+	path = src/node/lib/node_hash
+	url = https://github.com/Marak/node_hash.git
+[submodule "src/node/lib/formidable"]
+	path = src/node/lib/formidable
+	url = git://github.com/felixge/node-formidable.git
+
+[submodule "src/web/js/raphael"]
+	path = src/web/js/raphael
+	url = git://github.com/DmitryBaranovskiy/raphael.git
+[submodule "src/node/lib/node-utils"]
+	path = src/node/lib/node-utils
+	url = git://github.com/mikeal/node-utils.git

@@ -6,6 +6,6 @@ dojo.require('degrees.user.Profile');
 dojo.mixin(degrees.user, {
 	init : function(){
 		var service = new degrees.Service();
-		service.getUserInfo().addCallback(dojo.hitch(container, 'attr', 'user'));
+		service.getUserInfo().addCallback(dojo.hitch(container, 'attr', 'user'));        
 	}
 });
