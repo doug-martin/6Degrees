@@ -20,21 +20,15 @@ dojo.declare('degrees.user.layout.Container', degrees.layout.Container, {
 
     user : null,
 
-    name : '',
-
     widgetsInTemplate : true,
 
     templateString : dojo.cache('degrees.user.layout', 'templates/Container.html'),
 
     _selectedChild : null,
 
-    attributeMap : dojo.delegate(dijit._Widget.prototype.attributeMap, {
-        name : {node : 'nameNode', type : "innerHTML"}
-    }),
-
     postCreate : function() {
         this.service = new degrees.Service();
-        
+
 
     },
 
@@ -45,25 +39,41 @@ dojo.declare('degrees.user.layout.Container', degrees.layout.Container, {
         this.connect(button, 'onClick', dojo.partial(this._selectChild, child));
         if (!this._selectedChild) {
             this._selectChild(child);
-        }else{
+        } else {
             dojo.addClass(child.domNode, 'dijitHidden');
         }
         this.toolbar.addChild(button, index);
         dojo.style(child.domNode, {height : this.dim.h + 'px', width : this.dim.w + 'px'});
     },
-   
+
 
     _setUserAttr : function(user) {
         if (user) {
-            this.attr("name", user.name);
-            this.addChild(new degrees.user.Profile({user : user}), 0);
-            this.addChild(new degrees.user.FindConnection(), 1);
+            var findConnection, profile;
+            this.addChild((profile = new degrees.user.Profile({user : user})), 0);
+            this.addChild((findConnection = new degrees.user.FindConnection()), 1);
+            this.connect(findConnection, 'onImageClick', this._showFriendProfile);
+            this.connect(profile, 'onMessageClick', this._showFriendProfile);
+        }
+    },
+
+    _showFriendProfile : function(id) {
+        if (id) {
+            this.service.getFriendInfo(id).addCallback(dojo.hitch(this, function(usr) {
+                if (!this.friendProfile) {
+                    this.addChild((this.friendProfile = new degrees.user.Profile({title : 'Friend Profile'})));
+                }
+                this.friendProfile.attr('user', usr);
+                this._selectChild(this.friendProfile);
+            }));
         }
     },
 
     _logOut : function() {
         this.service.logout();
-        setTimeout(function(){dojo.global.location = '/6Degrees/';},100);        
+        setTimeout(function() {
+            dojo.global.location = '/6Degrees/';
+        }, 100);
     },
 
     _selectChild : function(child) {
@@ -75,11 +85,11 @@ dojo.declare('degrees.user.layout.Container', degrees.layout.Container, {
         }
     },
 
-    layout : function(){
+    layout : function() {
         this.dim = dojo.position(this.containerNode);
-        this.getChildren().forEach(function(child){
-             dojo.style(child.domNode, {height : this.dim.h + 'px', width : this.dim.w + 'px'});
+        this.getChildren().forEach(function(child) {
+            dojo.style(child.domNode, {height : this.dim.h + 'px', width : this.dim.w + 'px'});
         }, this);
-                
+
     }
 });

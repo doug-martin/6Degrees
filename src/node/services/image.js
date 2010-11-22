@@ -1,9 +1,11 @@
 var dojo = require("../lib/dojo");
-var UserUtil = require('../util/UserUtil');
+var userUtil = require('../util/UserUtil').UserUtil;
 var formidable = require('../lib/formidable');
 var sys = require('sys');
 var fs = require('fs');
 var child_process = require('child_process');
+
+var UserUtil = new userUtil;
 
 exports.setProfilePic = function(req, res) {
     var session = req.session;
@@ -26,10 +28,12 @@ exports.setProfilePic = function(req, res) {
     }
 };
 
-exports.getProfilePic = function(req, res) {
+exports.getProfilePic = function(id, req, res) {
     var session = req.session;
-    var id;
-    if (session && (id = session.data('user'))) {
+    if (session) {
+        if(!id){
+            id = session.data('user');
+        }
         console.log("Getting profile picture " + id);
         UserUtil.getProfilePicture(id, function(image, mime) {
             if (image) {

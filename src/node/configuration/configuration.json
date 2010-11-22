@@ -32,8 +32,18 @@
                             "session" : true
                         }
                     ]
+                },
+                {
+                    "handler" : "../../services/user.js",
+                    "operations" : [
+                        {
+                            "method" : "sendMessage",
+                            "path" : "/user/sendMessage",
+                            "params" : "to,message",
+                            "session" : true
+                        }
+                    ]
                 }
-
             ]
         },
         "GET" : {
@@ -88,6 +98,12 @@
                             "session" : true
                         },
                         {
+                            "method" : "getFriendInfo",
+                            "path" : "/friend/getInfo",
+                            "params" : "id",
+                            "session" : true
+                        },
+                        {
                             "method" : "searchForUsers",
                             "params" : "name",
                             "path"   : "/users/search/",
@@ -101,6 +117,7 @@
                         {
                             "method" : "getProfilePic",
                             "path" : "/image/profile",
+                            "params" : "id",
                             "session" : true
                         },
                         {

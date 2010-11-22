@@ -1,0 +1,15 @@
+.degreesUserMessages {
+    background:  transparent;
+}
+
+.degreesUserMessage {
+
+}
+
+.degreesUserMessage .time{
+    font-size: 9px;
+}
+
+.degreesUserMessage.image{
+    cursor : pointer;
+}

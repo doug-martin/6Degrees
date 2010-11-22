@@ -1,5 +1,7 @@
 var dojo = require('../lib/dojo');
-var UserUtil = require("../util/UserUtil");
+var userUtil = require("../util/UserUtil").UserUtil;
+
+var UserUtil = new userUtil;
 
 var APP_ACCESS_TOKEN = '150801354942182';
 

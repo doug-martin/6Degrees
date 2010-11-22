@@ -63,8 +63,7 @@ dojo.declare('degrees.user.Graph', dijit._Widget, {
                 var images = dojox.image.preload([url]);
                 var tmpImg = images[0], thisX = x, thisY = y, img, text, box;
                 var imgLoad = dojo.connect(tmpImg, 'onload', dojo.hitch(this, function() {
-                    dojo.disconnect(imgLoad);
-                    console.log('hello');
+                    dojo.disconnect(imgLoad);                    
                     var newH = tmpImg.height, newW = tmpImg.width;
                     var iXOffset = w - newW, iYOffset = newH / 2 - newH / 2;
                     //thisX = thisX + iXOffset;
@@ -73,18 +72,17 @@ dojo.declare('degrees.user.Graph', dijit._Widget, {
                     set.push((box = this.paper.rect(thisX + (w / 2 - rectW / 2), thisY + (h / 2 - rectH / 2), rectW, rectH, 10).attr({fill : "#708090", stroke : "#708090"})));
                     set.push((img = this.paper.image(url, thisX + (w / 2 - newW / 2), thisY, newW, newH).attr({stroke : '#FFF'})));
                     set.push((text = this.paper.text(thisX + w / 2, (y + h) + 30, usr.name).attr({stroke : '#708090', fill : '#708090', 'font-family' : 'sans-serif', 'font-size' : 14})));
-                    set.hover(function() {
-                        box.animate({scale : 1.2}, 300, 'bounce');
-                        img.animate({scale : 1.2}, 300, 'bounce');
-                    }, function() {
-                        box.animate({scale : 1.0}, 300, 'bounce');
-                        img.animate({scale : 1.0}, 300, 'bounce');
-                    });
+                    set.click(dojo.hitch(this, function() {                        
+                        this.onImageClick(usr.id);
+                    }));                   
                     this.paper.safari();
                 }));
                 x += w + sp;
             }, this);
         }
+    },
+
+    onImageClick : function(id) {
     }
 
 });

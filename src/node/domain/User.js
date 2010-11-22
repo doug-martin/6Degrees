@@ -1,5 +1,6 @@
 require.paths.unshift('../lib/mongoose/mongoose');
 var hash = require('../lib/node_hash/lib/hash');
+var dojo = require('../lib/dojo');
 var mongo = require('mongodb');
 var mongoose = require('../lib/mongoose/mongoose').Mongoose;
 
@@ -13,6 +14,7 @@ mongoose.model('User', {
         'password',
         'sex',
         {'friends' : []},
+        {'messages' : [['from', 'message', 'time', '_id']]},
         'name',
         'email',
         'verified',
@@ -28,13 +30,29 @@ mongoose.model('User', {
     methods : {
 
         containsFriend : function(id){
+            var newId;
             if(id instanceof mongo.ObjectID){
-                id = id.toJSON();
+                newId = id.toJSON();
+            }else{
+                newId = id;
             }
             return this.friends.some(function(fid){
                 fid = fid.toJSON();
-                return fid == id;
+                return fid == newId;
             });
+        },
+
+        addFriend : function(friendId){
+          if(!this.containsFriend(friendId)){
+              this.friends.push(friendId);
+          }
+        },
+
+        addMessage : function(message){
+            if(message && message.from)
+            {
+                this.messages.push(dojo.mixin(message, {_id : new mongo.ObjectID(), time : new Date()}));
+            }
         }
 
     },

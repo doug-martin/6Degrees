@@ -6,9 +6,8 @@ var dojo = require('../lib/dojo'),
 require('../domain/User');
 require('../domain/ProfilePic');
 
-var db = mongoose.connect('mongodb://localhost/degreesThree', {auto_reconnect : true});
-var User = db.model('User');
-var ProfilePicture = db.model('ProfilePicture');
+var User = null;
+var ProfilePicture = null;
 
 
 function saveProfilePicture(userId, data, mime, callback) {
@@ -23,18 +22,27 @@ function saveProfilePicture(userId, data, mime, callback) {
     });
 }
 
-dojo.mixin(exports, {
+exports.UserUtil = dojo.declare(null, {
+
+    constructor : function(opts) {
+        var url = 'mongodb://localhost/degreesThree';
+        if (opts) {
+            opts.url && (url = opts.url);
+        }
+        this.db = mongoose.connect(url, {auto_reconnect : true});
+        User = this.db.model('User');
+        ProfilePicture = this.db.model('ProfilePicture');
+    },
 
     sixDegrees : function(seeker, target, callback) {
         var found = {found : false};
         var searched = [];
         var search = function(usr, path, cb) {
             if (!found.found && searched.indexOf(usr._id.toJSON()) == -1) {
-                console.log("Searching : " + usr.name);
                 path.push({name : usr.name, id : usr._id.toJSON()});
                 searched.push(usr._id.toJSON());
                 var tFound = usr.containsFriend(target._id);
-                if (!tFound && path.length < 9) {
+                if (!tFound && path.length < 7) {
                     User.find({friends : usr._id}).all(function(users) {
                         if (!found.found) {
                             var i = 0, len = users.length;
@@ -52,20 +60,19 @@ dojo.mixin(exports, {
                             }
                         }
                     });
-                } else {
-                    if (tFound) {
-                        found.found = tFound;
-                    }
-                    console.log(sys.inspect(path));
-                    cb(tFound ? path : null);
+                } else if(tFound) {
+                    found.found = tFound;
+                    cb(path);
+                }else{
+                    cb(null);
                 }
             }
         };
         User.findById(target, function(tgt) {
-            target = tgt;
+            target = tgt;            
             User.findById(seeker, function(user) {
                 search(user, [], function(path) {
-                    path && path.push({name : tgt.name, id : tgt._id});
+                    path && path.push({name : tgt.name, id : tgt._id.toJSON()});
                     callback(path);
                 });
             });
@@ -78,7 +85,6 @@ dojo.mixin(exports, {
     },
 
     createUser : function(userJson, callback) {
-        console.log('Creating user');
         if (userJson.fbId) {
             console.log(userJson);
             User.find({fbId : userJson.fbId, created : false}).one(function(user) {
@@ -105,13 +111,53 @@ dojo.mixin(exports, {
         }
     },
 
+    removeUser : function(userId, callback) {
+        User.remove({_id : userId}, function(err, res) {
+            callback && callback(err, res)
+        });
+    },
+
     findByFbId : function(fbId, callback) {
         User.findByFbId(fbId).one(callback);
     },
 
+    findById : function(userId, callback) {
+        User.findById(userId, callback, true);
+    },
+
     getUserInfo : function(userId, callback) {
         User.findById(userId).one(function(usr) {
-            callback({dateOfBirth : usr.dateOfBirth, name : usr.name, sex : usr.sex, friends : usr.friends, email : usr.email});
+            callback({dateOfBirth : usr.dateOfBirth, name : usr.name, sex : usr.sex, friends : usr.friends, email : usr.email, messages : usr.messages,id : usr._id});
+        });
+    },
+
+    addFriend : function(userId, friendId, callback) {
+        User.findById(userId).one(function(usr) {
+            User.findById(friendId).one(function(usr2) {
+                if (usr && usr2) {
+                    usr.addFriend(usr2._id);
+                    usr2.addFriend(usr._id);
+                    usr.save(function(){
+                       usr2.save(function(){
+                           callback && callback(usr);
+                       });
+                    });
+                } else {
+                    callback && callback(null);
+                }
+            });
+        });
+    },
+
+    addMessage : function(from, to, message, callback) {
+        User.findById(to).one(function(usr) {
+            if (usr) {
+                usr.addMessage({from : from, message : message});
+                usr.save();
+                callback(usr.messages[usr.messages.length - 1]);
+            } else {
+                callback(null);
+            }
         });
     },
 

@@ -1,5 +1,6 @@
 var url = require("url");
 var dojo = require("../../dojo");
+var queryString = require('querystring');
 
 module.exports.PostServer = dojo.declare(null, {    
 
@@ -36,9 +37,11 @@ module.exports.PostServer = dojo.declare(null, {
         req.setEncoding('utf8');
         var params = "";
         req.on('data', function(data) {
-            params += data;
+            console.log(data);
+            params += queryString.unescape(data);
         });
         req.on('end', function() {
+
             var data = JSON.parse(params);
             params = handler.params;
             var args = dojo.map((params || "").split(","), function(name) {

@@ -20,8 +20,24 @@ dojo.declare('degrees.Service', null, {
         return dojo.xhrGet(req);
     },
 
-    sendMessage : function() {
+    postMessage : function(to, message) {
+        var req = {
+            url : "/6Degrees/user/sendMessage",
+            postData : dojo.toJson({to : to, message : message}),
+            handleAs : 'json',
+            preventCache : true
+        };
+        return dojo.xhrPost(req);
+    },
 
+    getFriendInfo : function(id) {
+        var req = {
+            url : "/6Degrees/friend/getInfo",
+            content : {id : id},
+            handleAs : 'json',
+            preventCache : true
+        };
+        return dojo.xhrGet(req);
     },
 
     getUserInfo : function() {

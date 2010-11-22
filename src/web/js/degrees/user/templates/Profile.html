@@ -1,24 +1,33 @@
 <div class='degreesUserProfile'>
-   
-    <table>
-        <tr>
-            <th class='label tableHeader'>Info</th>
-            <td>
-                <table>
-                    <tr>
-                        <td class='label'>Email :</td>
-                        <td dojoAttachPoint='emailNode'></td>
-                    </tr>
-                    <tr>
-                        <td class='label'>Sex :</td>
-                        <td dojoAttachPoint='sexNode'></td>
-                    </tr>
-                    <tr>
-                        <td class='label'>Birthday :</td>
-                        <td dojoAttachPoint='birthdayNode'></td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-    </table>
+    <div class="dijitInline leftPane">
+        <div dojoAttachPoint='profilePicture' dojoType='degrees.user.ProfilePicture' class='profile'></div>
+    </div>
+    <div class="dijitInline rightPane">
+        <div class="information" dojoAttachPoint='nameNode'></div>
+        <hr/>
+        <table>
+            <tr>
+                <th class='label tableHeader'>Info</th>
+                <td>
+                    <table>
+                        <tr>
+                            <td class='label'>Email :</td>
+                            <td dojoAttachPoint='emailNode'></td>
+                        </tr>
+                        <tr>
+                            <td class='label'>Sex :</td>
+                            <td dojoAttachPoint='sexNode'></td>
+                        </tr>
+                        <tr>
+                            <td class='label'>Birthday :</td>
+                            <td dojoAttachPoint='birthdayNode'></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+        <div class="label">Messages</div>
+        <hr>
+        <table dojoAttachPoint='messages' dojoType='degrees.user.Messages' dojoAttachEvent='onMessageClick : onMessageClick'></table>
+    </div>
 </div>

@@ -1,0 +1,11 @@
+<table class="degreesUserMessages">
+    <tr>
+        <td class='postMessage' colspan="3"> 
+            <form dojoAttachPoint='form' dojoType='dijit.form.Form' onSubmit="return false;" dojoAttachEvent='onSubmit:_postMessage'>
+                <textarea name="message" dojoType="dijit.form.Textarea" required='true'></textarea>
+                <button dojoType="dijit.form.Button" type="submit">Post</button>
+            </form>
+        </td>
+    </tr>
+    <tbody dojoAttachPoint='containerNode'></tbody>
+</table>

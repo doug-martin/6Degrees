@@ -5,6 +5,7 @@ dojo.require('dijit._Templated');
 dojo.require("dojo.date.locale");
 dojo.require("dojo.io.iframe");
 dojo.require('degrees.Service');
+dojo.require('degrees.user.Messages');
 
 dojo.declare('degrees.user.Profile', [dijit._Widget, dijit._Templated], {
 
@@ -20,6 +21,8 @@ dojo.declare('degrees.user.Profile', [dijit._Widget, dijit._Templated], {
 
     title : 'Profile',
 
+    widgetsInTemplate : true,
+
     templateString : dojo.cache('degrees.user', 'templates/Profile.html'),
 
     attributeMap : dojo.delegate(dijit._Widget.prototype.attributeMap, {
@@ -32,28 +35,44 @@ dojo.declare('degrees.user.Profile', [dijit._Widget, dijit._Templated], {
     _setUserAttr : function(user) {
         if (user) {
             this.user = user;
+            this.attr('name', user.name);
             this.attr('birthday', degrees.formatDate(user.dateOfBirth, false));
             this.attr('email', user.email);
             this.attr('sex', user.sex);
+            this.profilePicture.attr('userId', user.id);
+            this.messages.attr('usrId', user.id);
+            this.messages.attr('messages', user.messages);            
         }
-    }
+    },
+
+    onMessageClick : function(id){}
 });
 
 dojo.declare('degrees.user.ProfilePicture', [dijit._Widget, dijit._Templated], {
 
-    src : '/6Degrees/image/profile',
+    userId : null,
+
+    srcUrl : '/6Degrees/image/profile',
+
+    src : '',
 
     baseClass : 'degreesUserProfilePicture',
 
     uploadUrl : '/6Degrees/image/profile',
 
-    templateString : "<div class='${baseClass}' dojoAttachEvent='onmouseenter:_showEdit,onmouseleave:_hideEdit'>"
-            + "<img dojoAttachPoint='img' src='${src}' class='img'/>"
+    templateString : "<div class='${src}' dojoAttachEvent='onmouseenter:_showEdit,onmouseleave:_hideEdit'>"
+            + "<img dojoAttachPoint='img' src='${srcUrl}' class='img'/>"
             + "<span dojoAttachPoint='editNode' class='edit'><input class='fileUploader' name='upload' dojoAttachPoint='fileInput' dojoAttachEvent='onchange : _edit' type='file'/></span></div>",
 
     attributeMap : dojo.delegate(dijit._Widget.prototype.attributeMap, {
         src : {node : 'img', type : "attr"}
     }),
+
+    _setUserIdAttr : function(id){
+        this.userId = id;
+        this.attr('src', this.srcUrl + '?id=' + id);
+        this.img.src = this.src;
+    },
 
     startup : function() {
         if (!this._started) {

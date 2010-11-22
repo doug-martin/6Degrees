@@ -36,10 +36,13 @@ dojo.declare('degrees.user.FindConnection', [dijit._Widget, dijit._Templated], {
                 var dim = dojo.position(this.domNode);
                 this.graph = new degrees.user.Graph({width : dim.w, height : dim.h * .8}, this.graphNode);
                 this.graph.startup();
+                this.connect(this.graph, 'onImageClick', this.onImageClick)
             }
             dojo.addClass(this.searching, 'dijitHidden');
             dojo.removeClass(this.graphNode, 'dijitHidden');
             this.graph.attr('path', connection);
         }));
-    }
+    },
+
+    onImageClick : function(id){}
 });

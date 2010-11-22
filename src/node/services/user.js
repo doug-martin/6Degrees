@@ -1,9 +1,11 @@
 var dojo = require("../lib/dojo");
-var UserUtil = require('../util/UserUtil');
+var userUtil = require('../util/UserUtil').UserUtil;
 var fb = require("../clients/Facebook").FacebookClient;
 var formidable = require('../lib/formidable');
 var sys = require('sys');
 var fs = require('fs');
+
+var UserUtil = new userUtil;
 
 var APP_ACCESS_TOKEN = '150801354942182';
 var APP_SECRET = 'ad2230fd13e0ada3766afbe146ef633f';
@@ -18,17 +20,40 @@ exports.findConnection = function(target, req, res) {
         console.log('Searching for ' + target);
         UserUtil.sixDegrees(id, target, function(path) {
             console.log('found path');
-            if(path){
-                path = path.map(function(usr){return {name : usr.name, id : usr.id};});
+            if (path) {
+                path = path.map(function(usr) {
+                    return {name : usr.name, id : usr.id};
+                });
             }
             path = path || {message : 'Path not found'};
             res.simpleJSON(200, path);
         });
     }
 };
-exports.sendMessage = function() {
+exports.sendMessage = function(to, message, req, res) {
+    var session = req.session;
+    var id;
+    if (session && (id = session.data('user'))) {
+        UserUtil.addMessage(id, to, message, function(msg) {
+            if (msg) {
+                res.simpleJSON(200, {message : msg});
+            } else {
+                res.simpleJSON(200, {error : "User does not exist"});
+            }
+        })
+    }
 };
-exports.getPersonInfo = function() {
+
+exports.getFriendInfo = function(id, req, res) {
+    console.log("Retreiving friend with id " + id);
+    UserUtil.getUserInfo(id, function(user) {
+        if (user) {
+            res.simpleJSON(200, user);
+        } else {
+            res.simpleJSON(200, {'error' : 'Error retreiving user information'});
+        }
+    });
+
 };
 
 exports.getInfo = function(req, res) {
@@ -46,21 +71,6 @@ exports.getInfo = function(req, res) {
     }
 };
 
-exports.getMessages = function(forUid, req, res) {
-    var session = req.session;
-    var id;
-    if (session && (id = session.data('user')) != null) {
-        messagesDAO.getMessagesForUser(forUid, function(error, messages) {
-            var posts = messages.posts;
-            if (id != forUid) {
-                posts = posts.filter(function(post) {
-                    return (!post.private || post.fromUid == id);
-                }, this);
-            }
-            res.simpleJSON(posts);
-        });
-    }
-};
 
 exports.getFriends = function(req, res) {
     var cookie = req.getCookie('fbs_' + APP_ACCESS_TOKEN);
@@ -73,8 +83,8 @@ exports.getFriends = function(req, res) {
     }
 };
 
-exports.searchForUsers = function(name, req, res){
-    UserUtil.searchUsers(name, function(users){
+exports.searchForUsers = function(name, req, res) {
+    UserUtil.searchUsers(name, function(users) {
         res.simpleJSON(200, users);
     });
 };
