@@ -36,8 +36,7 @@ module.exports.PostServer = dojo.declare(null, {
         {
         req.setEncoding('utf8');
         var params = "";
-        req.on('data', function(data) {
-            console.log(data);
+        req.on('data', function(data) {            
             params += queryString.unescape(data);
         });
         req.on('end', function() {

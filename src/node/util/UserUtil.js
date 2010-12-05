@@ -127,7 +127,7 @@ exports.UserUtil = dojo.declare(null, {
 
     getUserInfo : function(userId, callback) {
         User.findById(userId).one(function(usr) {
-            callback({dateOfBirth : usr.dateOfBirth, name : usr.name, sex : usr.sex, friends : usr.friends, email : usr.email, messages : usr.messages,id : usr._id});
+            callback &&  callback({dateOfBirth : usr.dateOfBirth, name : usr.name, sex : usr.sex, friends : usr.friends, email : usr.email, messages : usr.messages,id : usr._id});
         });
     },
 
@@ -154,9 +154,9 @@ exports.UserUtil = dojo.declare(null, {
             if (usr) {
                 usr.addMessage({from : from, message : message});
                 usr.save();
-                callback(usr.messages[usr.messages.length - 1]);
+                callback && callback(usr.messages[usr.messages.length - 1]);
             } else {
-                callback(null);
+                callback && callback(null);
             }
         });
     },
@@ -214,9 +214,9 @@ exports.UserUtil = dojo.declare(null, {
     getProfilePicture : function(userId, callback) {
         ProfilePicture.find({user : userId}).one(function(image) {
             if (image) {
-                callback(image.data.buffer, image.mime);
+                callback && callback(image.data.buffer, image.mime);
             } else {
-                callback(null);
+                callback && callback(null);
             }
 
         });
@@ -242,7 +242,7 @@ exports.UserUtil = dojo.declare(null, {
                 }
                 return ret;
             });
-            callback(users.map(function(user) {
+            callback && callback(users.map(function(user) {
                 return {name : user.name, id : user._id};
             }));
         });
