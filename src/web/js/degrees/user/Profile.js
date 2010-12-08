@@ -36,16 +36,23 @@ dojo.declare('degrees.user.Profile', [dijit._Widget, dijit._Templated], {
         if (user) {
             this.user = user;
             this.attr('name', user.name);
-            this.attr('birthday', degrees.formatDate(user.dateOfBirth, false));
-            this.attr('email', user.email);
-            this.attr('sex', user.sex);
+            if(user.dateOfBirth && user.email && user.sex)
+            {
+                this.attr('birthday', degrees.formatDate(user.dateOfBirth, false));
+                this.attr('email', user.email);
+                this.attr('sex', user.sex);
+            }else{
+                dojo.addClass(this.infoTable, 'dijitHidden');
+            }
+            this.profilePicture.attr('locked', user.locked);
             this.profilePicture.attr('userId', user.id);
             this.messages.attr('usrId', user.id);
-            this.messages.attr('messages', user.messages);            
+            this.messages.attr('messages', user.messages);
         }
     },
 
-    onMessageClick : function(id){}
+    onMessageClick : function(id) {
+    }
 });
 
 dojo.declare('degrees.user.ProfilePicture', [dijit._Widget, dijit._Templated], {
@@ -55,6 +62,8 @@ dojo.declare('degrees.user.ProfilePicture', [dijit._Widget, dijit._Templated], {
     srcUrl : '/6Degrees/image/profile',
 
     src : '',
+
+    locked : false,
 
     baseClass : 'degreesUserProfilePicture',
 
@@ -68,7 +77,7 @@ dojo.declare('degrees.user.ProfilePicture', [dijit._Widget, dijit._Templated], {
         src : {node : 'img', type : "attr"}
     }),
 
-    _setUserIdAttr : function(id){
+    _setUserIdAttr : function(id) {
         this.userId = id;
         this.attr('src', this.srcUrl + '?id=' + id);
         this.img.src = this.src;
@@ -82,7 +91,9 @@ dojo.declare('degrees.user.ProfilePicture', [dijit._Widget, dijit._Templated], {
     },
 
     _showEdit : function() {
-        dojo.addClass(this.domNode, this.baseClass + 'Hover');
+        if (!this.locked) {
+            dojo.addClass(this.domNode, this.baseClass + 'Hover');
+        }
     },
 
     _hideEdit : function() {
@@ -90,22 +101,24 @@ dojo.declare('degrees.user.ProfilePicture', [dijit._Widget, dijit._Templated], {
     },
 
     _edit : function(val) {
-        this.sendForm = dojo.create('form', {enctype : "multipart/form-data", style : {opacity : 0}}, dojo.body());
-        this.sendForm.appendChild(this.fileInput);
-        dojo.io.iframe.send({
-            url: this.uploadUrl,
-            form: this.sendForm,
-            handleAs: "json",
-            handle: dojo.hitch(this, "_handleSend")
-        });
+        if (!this.locked) {
+            this.sendForm = dojo.create('form', {enctype : "multipart/form-data", style : {opacity : 0}}, dojo.body());
+            this.sendForm.appendChild(this.fileInput);
+            dojo.io.iframe.send({
+                url: this.uploadUrl,
+                form: this.sendForm,
+                handleAs: "json",
+                handle: dojo.hitch(this, "_handleSend")
+            });
+        }
     },
 
     _handleSend : function(res) {
         dojo.place(this.fileInput, this.editNode);
         dojo.destroy(this.sendForm);
-        if(res.uploaded){
+        if (res.uploaded) {
             dojo.destroy(this.img);
-            this.img = dojo.create('img', {src : this.src + '?preventcache='+ Math.random()}, this.domNode, 'first');
+            this.img = dojo.create('img', {src : this.src + '?preventcache=' + Math.random()}, this.domNode, 'first');
             dojo.addClass(this.img, 'img');
         }
     }

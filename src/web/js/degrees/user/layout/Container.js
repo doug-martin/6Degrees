@@ -35,7 +35,8 @@ dojo.declare('degrees.user.layout.Container', degrees.layout.Container, {
     addChild : function(child, index) {
         this.inherited(arguments);
         var title = child.title || 'Child ' + this.getChildren().length;
-        var button = new dijit.form.Button({label : title, class:'button'});
+        var button = new dijit.form.Button({label : title});
+        dojo.addClass(button.domNode, 'button');
         this.connect(button, 'onClick', dojo.partial(this._selectChild, child));
         if (!this._selectedChild) {
             this._selectChild(child);
@@ -49,8 +50,9 @@ dojo.declare('degrees.user.layout.Container', degrees.layout.Container, {
 
     _setUserAttr : function(user) {
         if (user) {
+            this.user = user;
             var findConnection, profile;
-            this.addChild((profile = new degrees.user.Profile({user : user})), 0);
+            this.addChild((this.profile = profile = new degrees.user.Profile({user : user})), 0);
             this.addChild((findConnection = new degrees.user.FindConnection()), 1);
             this.connect(findConnection, 'onImageClick', this._showFriendProfile);
             this.connect(profile, 'onMessageClick', this._showFriendProfile);
@@ -59,13 +61,19 @@ dojo.declare('degrees.user.layout.Container', degrees.layout.Container, {
 
     _showFriendProfile : function(id) {
         if (id) {
-            this.service.getFriendInfo(id).addCallback(dojo.hitch(this, function(usr) {
-                if (!this.friendProfile) {
-                    this.addChild((this.friendProfile = new degrees.user.Profile({title : 'Friend Profile'})));
-                }
-                this.friendProfile.attr('user', usr);
-                this._selectChild(this.friendProfile);
-            }));
+            if (id == this.user.id) {
+                 this._selectChild(this.profile);
+            }
+            else {
+                this.service.getFriendInfo(id).addCallback(dojo.hitch(this, function(usr) {
+                    if (!this.friendProfile) {
+                        this.addChild((this.friendProfile = new degrees.user.Profile({title : 'Friend Profile'})));
+                    }
+                    this.friendProfile.attr('user', usr);
+                    this.connect(this.friendProfile, 'onMessageClick', this._showFriendProfile);
+                    this._selectChild(this.friendProfile);
+                }));
+            }
         }
     },
 

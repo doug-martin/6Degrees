@@ -2,6 +2,7 @@ var dojo = require('../lib/dojo'),
         mongoose = require('../lib/mongoose/mongoose').Mongoose,
         fb = require("../clients/Facebook").FacebookClient,
         sys = require('sys'),
+        mongo = require('mongodb'),
         fs = require("fs");
 require('../domain/User');
 require('../domain/ProfilePic');
@@ -60,22 +61,30 @@ exports.UserUtil = dojo.declare(null, {
                             }
                         }
                     });
-                } else if(tFound) {
+                } else if (tFound) {
                     found.found = tFound;
                     cb(path);
-                }else{
-                    cb(null);
+                } else {
+                    cb([]);
                 }
             }
         };
         User.findById(target, function(tgt) {
-            target = tgt;            
-            User.findById(seeker, function(user) {
-                search(user, [], function(path) {
-                    path && path.push({name : tgt.name, id : tgt._id.toJSON()});
-                    callback(path);
+            target = tgt;
+            if (target) {
+                User.findById(seeker, function(user) {
+                    if (user && user._id.toJSON() != tgt._id.toJSON()) {                        
+                        search(user, [], function(path) {
+                            path && path.push({name : tgt.name, id : tgt._id.toJSON()});
+                            callback(path);
+                        });
+                    } else {
+                        callback([]);
+                    }
                 });
-            });
+            } else {
+                callback([]);
+            }
         });
 
     },
@@ -86,9 +95,7 @@ exports.UserUtil = dojo.declare(null, {
 
     createUser : function(userJson, callback) {
         if (userJson.fbId) {
-            console.log(userJson);
             User.find({fbId : userJson.fbId, created : false}).one(function(user) {
-                console.log(user);
                 if (user) {
                     user.name = userJson.name;
                     user.dateOfBirth = userJson.dateOfBirth;
@@ -127,7 +134,7 @@ exports.UserUtil = dojo.declare(null, {
 
     getUserInfo : function(userId, callback) {
         User.findById(userId).one(function(usr) {
-            callback &&  callback({dateOfBirth : usr.dateOfBirth, name : usr.name, sex : usr.sex, friends : usr.friends, email : usr.email, messages : usr.messages,id : usr._id});
+            callback && callback({dateOfBirth : usr.dateOfBirth || null, name : usr.name, sex : usr.sex, friends : usr.friends, email : usr.email || null, messages : usr.messages,id : usr._id});
         });
     },
 
@@ -137,10 +144,10 @@ exports.UserUtil = dojo.declare(null, {
                 if (usr && usr2) {
                     usr.addFriend(usr2._id);
                     usr2.addFriend(usr._id);
-                    usr.save(function(){
-                       usr2.save(function(){
-                           callback && callback(usr);
-                       });
+                    usr.save(function() {
+                        usr2.save(function() {
+                            callback && callback(usr);
+                        });
                     });
                 } else {
                     callback && callback(null);
@@ -150,14 +157,21 @@ exports.UserUtil = dojo.declare(null, {
     },
 
     addMessage : function(from, to, message, callback) {
-        User.findById(to).one(function(usr) {
-            if (usr) {
-                usr.addMessage({from : from, message : message});
-                usr.save();
-                callback && callback(usr.messages[usr.messages.length - 1]);
+        User.findById(from).one(function(from) {
+            if (from) {
+                User.findById(to).one(function(usr) {
+                    if (usr) {
+                        usr.addMessage({from : {id : from._id, name : from.name}, message : message});
+                        usr.save();
+                        callback && callback(usr.messages[usr.messages.length - 1]);
+                    } else {
+                        callback && callback(null);
+                    }
+                });
             } else {
                 callback && callback(null);
             }
+
         });
     },
 
@@ -225,7 +239,6 @@ exports.UserUtil = dojo.declare(null, {
     searchUsers : function(query, callback) {
         var q = new RegExp("^" + query + "|" + query + "\\w*$", "i");
         var r1 = new RegExp('^' + query, 'i'), r2 = new RegExp(query + '\\w*$', 'i');
-        console.log(q);
         User.find({'name' : q}).all(function(users) {
             users.sort(function(a, b) {
                 var ret = 0;
@@ -252,14 +265,10 @@ exports.UserUtil = dojo.declare(null, {
         if (userJson.fbId) {
             var client = new fb();
             User.find({fbId : userJson.fbId, created : false}).one(function(user) {
-                console.log(user);
                 client.getInfo(userJson.fbId, accessToken).addCallback(function(userInfo) {
                     var data = JSON.parse(userInfo);
-                    console.log(data);
-                    console.log(user);
                     var dob = data.birthday;
                     var parts = dob.split('/');
-                    console.log(parts);
                     if (parts.length) {
                         dob = new Date();
                         dob.setFullYear(parseInt(parts[2]), parseInt(parts[0]) - 1, parseInt(parts[1]));

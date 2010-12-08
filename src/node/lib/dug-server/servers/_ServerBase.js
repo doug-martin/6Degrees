@@ -49,8 +49,7 @@ module.exports._ServerBase = dojo.declare(null, {
 			ret = dojo.map((params || "").split(","), function(name) {
 				return query[name] || null
 			});
-		}
-        console.log(ret);
+		}        
 		return ret;
 	},
 
@@ -76,7 +75,7 @@ module.exports._ServerBase = dojo.declare(null, {
 		file(req, res);
 	},
 
-	notAuhthorized : function(req, res) {
+	notAuthorized : function(req, res) {
 		var file = this.getErrorFile(401);
 		file(req, res);
 	},

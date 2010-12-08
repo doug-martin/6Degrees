@@ -10,8 +10,7 @@ var UserUtil = new userUtil;
 exports.setProfilePic = function(req, res) {
     var session = req.session;
     var id;
-    if (session && (id = session.data('user'))) {
-        console.log("Setting profile picture " + id);
+    if (session && (id = session.data(session.sid, 'user'))) {
         var form = new formidable.IncomingForm();
         form.parse(req, function(err, fields, files) {
             console.log(sys.inspect({fields: fields, files: files}));
@@ -32,9 +31,8 @@ exports.getProfilePic = function(id, req, res) {
     var session = req.session;
     if (session) {
         if(!id){
-            id = session.data('user');
+            id = session.data(session.sid, 'user');
         }
-        console.log("Getting profile picture " + id);
         UserUtil.getProfilePicture(id, function(image, mime) {
             if (image) {
                 res.image(image, mime);
@@ -48,9 +46,7 @@ exports.getProfilePic = function(id, req, res) {
 };
 
 exports.getProfileForUser = function(id, width, height, req, res) {
-    var session = req.session;
-
-    console.log("Getting profile picture " + id);
+    var session = req.session;    
     UserUtil.getProfilePicture(id, function(image, mime) {
         if (image) {
             scale(image, 'image/png', width, height, dojo.hitch(res, res.image));

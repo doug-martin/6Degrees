@@ -13,13 +13,10 @@ var API_KEY = '308d7b7179b56300f0cacac44ef5e39b';
 var client = new fb();
 
 exports.findConnection = function(target, req, res) {
-    console.log('Hit it');
     var session = req.session;
     var id;
-    if (session && (id = session.data('user'))) {
-        console.log('Searching for ' + target);
+    if (session && (id = session.data(session.sid, 'user'))) {
         UserUtil.sixDegrees(id, target, function(path) {
-            console.log('found path');
             if (path) {
                 path = path.map(function(usr) {
                     return {name : usr.name, id : usr.id};
@@ -33,7 +30,7 @@ exports.findConnection = function(target, req, res) {
 exports.sendMessage = function(to, message, req, res) {
     var session = req.session;
     var id;
-    if (session && (id = session.data('user'))) {
+    if (session && (id = session.data(session.sid, 'user'))) {
         UserUtil.addMessage(id, to, message, function(msg) {
             if (msg) {
                 res.simpleJSON(200, {message : msg});
@@ -45,9 +42,9 @@ exports.sendMessage = function(to, message, req, res) {
 };
 
 exports.getFriendInfo = function(id, req, res) {
-    console.log("Retreiving friend with id " + id);
     UserUtil.getUserInfo(id, function(user) {
         if (user) {
+            user['locked'] = true;
             res.simpleJSON(200, user);
         } else {
             res.simpleJSON(200, {'error' : 'Error retreiving user information'});
@@ -59,8 +56,7 @@ exports.getFriendInfo = function(id, req, res) {
 exports.getInfo = function(req, res) {
     var session = req.session;
     var id;
-    if (session && (id = session.data('user'))) {
-        console.log("Retreiving user with id " + id);
+    if (session && (id = session.data(session.sid, 'user'))) {
         UserUtil.getUserInfo(id, function(user) {
             if (user) {
                 res.simpleJSON(200, user);
@@ -74,8 +70,7 @@ exports.getInfo = function(req, res) {
 
 exports.getFriends = function(req, res) {
     var cookie = req.getCookie('fbs_' + APP_ACCESS_TOKEN);
-    if (cookie) {
-        console.log(cookie);
+    if (cookie) {        
         var access_token = cookie['access_token'];
         var uid = cookie['uid'];
         var def = client.getFriends(uid, access_token);

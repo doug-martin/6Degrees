@@ -15,10 +15,10 @@ module.exports.PostServer = dojo.declare(null, {
             var handler = this.postMap[urlObj.pathname];
             if (handler) {
                 var session = req.session;
-                if (!handler.session || session.data('user')) {
+                if (!handler.session || session.data(session.sid,'user')) {
                     return dojo.hitch(this, '_postRequestHandler', handler);
                 }else{
-                    this.notAuthorized(req, res);F
+                    this.notAuthorized(req, res);
                 }
             }
             //return handler.handler.apply(handler.scope || null, this._matchPostParams(req, handler.params));

@@ -1,8 +1,4 @@
-@import "../js/degrees/layout/themes/Container.css";
-@import "../js/degrees/themes/Logon.css";
-@import "../js/degrees/user/layout/themes/Container.css";
-@import "../js/degrees/user/themes/Profile.css";
-@import "../js/degrees/user/themes/Messages.css";
+@import "../js/degrees/themes/degrees.css";
 
 body, head, html{
     width : 100%;

@@ -1,9 +1,6 @@
 dojo.registerModulePath("degrees", "../../degrees");
 dojo.provide('degrees');
 dojo.require('degrees.Service');
-dojo.require('dijit.Dialog');
-dojo.require('degrees.layout.Container');
-dojo.require('degrees.Logon');
 
 dojo.mixin(degrees, {    
     

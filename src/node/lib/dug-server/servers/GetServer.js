@@ -15,8 +15,7 @@ module.exports.GetServer = dojo.declare(null, {
             var handler = this.getMap[urlObj.pathname];
             if (handler) {
                 var session = req.session;
-                if (!handler.session || session.data('user')) {
-                    console.log("Session : ", handler.session);
+                if (!handler.session || session.data(session.sid, 'user')) {                    
                     var params = this._matchParams(urlObj, handler.params);
                     var _this = this;
                     var f = this._hitchArgs((handler.scope || _this), handler.handler, params);

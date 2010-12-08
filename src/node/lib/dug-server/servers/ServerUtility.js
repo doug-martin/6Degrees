@@ -10,7 +10,7 @@ exports.StaticFileServer = dojo.declare(null, (function() {
         var index = path.lastIndexOf(".");
         return index < 0 ? "" : path.substring(index);
     };
-    var DEBUG = true;
+    var DEBUG = false;
 
     return{        
 
@@ -67,7 +67,8 @@ exports.StaticFileServer = dojo.declare(null, (function() {
                 var path = url.parse(req.url).pathname;                
                 if (this.files[path]) {
                 	var file = this.files[path];
-                	if(!file.session || req.session.data('user')){
+                    var session = req.session;
+                	if(!file.session || session.data(session.sid, 'user')){
                 		return file.handler;
                 	}else{
                 		res.redirect(this.basePath + '/');

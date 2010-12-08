@@ -23,7 +23,7 @@ function resolveMethods(methodObj, httpMethod, server) {
             var operation = operations[j];
             var func = operation.method;
             if (handler[func]) {
-                var path = operation.path || "/" + func;
+                var path = operation.path != null && operation.path != undefined ? operation.path : "/" + func;
                 var params = operation.params || "";
                 var session = operation.session || false;
                 console.log("adding method at path " + server.basePath + path);

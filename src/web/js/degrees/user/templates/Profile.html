@@ -5,7 +5,7 @@
     <div class="dijitInline rightPane">
         <div class="information" dojoAttachPoint='nameNode'></div>
         <hr/>
-        <table>
+        <table class="infoTable" dojoAttachPoint='infoTable'>
             <tr>
                 <th class='label tableHeader'>Info</th>
                 <td>
@@ -28,6 +28,6 @@
         </table>
         <div class="label">Messages</div>
         <hr>
-        <table dojoAttachPoint='messages' dojoType='degrees.user.Messages' dojoAttachEvent='onMessageClick : onMessageClick'></table>
+        <table class="messages" dojoAttachPoint='messages' dojoType='degrees.user.Messages' dojoAttachEvent='onMessageClick : onMessageClick'></table>
     </div>
 </div>

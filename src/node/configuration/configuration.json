@@ -72,6 +72,12 @@
                             "path" : "/"
                         },
                         {
+                            "method" : "checkStatus",
+                            "path" : "/auth/checkStatus",
+                            "session" : false,
+                            "path" : ""
+                        },
+                        {
                             "method" : "logout",
                             "path" : "/auth/logout",
                             "session" : false

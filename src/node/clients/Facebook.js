@@ -19,7 +19,6 @@ exports.FacebookClient = dojo.declare(null, {
     },
 
     _makeRequest : function(url, params, def) {
-        console.log(url + '?' + queryString.stringify(params, '&', '=', false));
         var request = this.client.request('GET', url + '?' + queryString.stringify(params, '&', '=', false), {'host': this.host}, {'host': this.host});
         request.on('response', dojo.hitch(this, this._handleResponse, def));
         request.end();
@@ -27,7 +26,6 @@ exports.FacebookClient = dojo.declare(null, {
 
     getFriends : function(uid, access_token) {
         var def = new dojo.Deferred();
-        console.log("Finding friends..");
         if (access_token && uid) {
             this._makeRequest('/' + uid + '/friends', {'access_token' : access_token}, def);
         } else {
@@ -38,7 +36,6 @@ exports.FacebookClient = dojo.declare(null, {
 
     getInfo : function(uid, access_token) {
         var def = new dojo.Deferred();
-        console.log("Finding user info..");
         if (access_token && uid) {
             this._makeRequest('/' + uid, {'access_token' : access_token}, def);
         } else {
@@ -48,8 +45,7 @@ exports.FacebookClient = dojo.declare(null, {
     },
 
     getProfilePicture : function(uid, access_token) {
-        var def = new dojo.Deferred();
-        console.log("Finding user profile pic..");
+        var def = new dojo.Deferred();        
         if (access_token && uid) {
             var r = this.client.request('GET', '/' + uid + '/picture' + '?' + queryString.stringify({'access_token' : access_token}, '&', '=', false), {'host': this.host}, {'host': this.host});
             r.on('response', dojo.hitch(this, function(res) {

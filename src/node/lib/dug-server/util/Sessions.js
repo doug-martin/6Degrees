@@ -59,14 +59,13 @@
 				data : dojo.hitch(this, function(sid, key, value) {
 					if (value) {
 						this.setData(sid, key, value);
-					}
-
+					}                    
 					if (key) {
 						return this.getData(sid, key);
 					} else {
 						return this.getData(sid);
 					}
-				}, _sid),
+				}),
 				destroy : dojo.hitch(this, function(sid, resp) {
 					resp.clearCookie("SID");
 					this.destroy(sid);

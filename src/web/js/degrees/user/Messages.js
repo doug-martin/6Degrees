@@ -61,15 +61,18 @@ dojo.declare('degrees.user.Message', [dijit._Widget, dijit._Templated], {
 
     _setMessageAttr : function(message) {
         if (message) {
-            this.userId = message.from;
+            this.userId = message.from.id;
             this.timeNode.innerHTML = dojo.date.locale.format(new Date(message.time), {datePattern : "MMM d, "});
-            this.image.src = dojo.replace(this.thumbUrl, {id : message.from, width : this.thumbWidth, height : this.thumbHeight});
+            this.image.src = dojo.replace(this.thumbUrl, {id : message.from.id, width : this.thumbWidth, height : this.thumbHeight});
             this.messageNode.innerHTML = message.message;
+            this.fromNode.innerHTML = message.from.name;
         }
     },
 
     _selectUser : function(){
         this.onMessageClick(this.userId);
-    }
+    },
+
+    onMessageClick : function(id){}
 
 });
