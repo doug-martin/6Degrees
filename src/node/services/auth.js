@@ -1,7 +1,7 @@
 var dojo = require('../lib/dojo');
 var userUtil = require("../util/UserUtil").UserUtil;
 
-var UserUtil = new userUtil;
+var UserUtil = new userUtil();
 
 var APP_ACCESS_TOKEN = '150801354942182';
 
@@ -16,6 +16,7 @@ exports.checkStatus = function(req, res) {
 };
 
 exports.createUserFromFacebook = function(user, req, res) {
+    console.log("hit it");
     var cookie = req.getCookie('fbs_' + APP_ACCESS_TOKEN);
     if (cookie) {
         user.fbId = cookie['uid'];

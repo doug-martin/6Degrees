@@ -19,9 +19,15 @@ exports.FacebookClient = dojo.declare(null, {
     },
 
     _makeRequest : function(url, params, def) {
-        var request = this.client.request('GET', url + '?' + queryString.stringify(params, '&', '=', false), {'host': this.host}, {'host': this.host});
-        request.on('response', dojo.hitch(this, this._handleResponse, def));
-        request.end();
+        try {
+            console.log("hello");
+            var request = this.client.request('GET', url + '?' + queryString.stringify(params, '&', '=', false), {'host': this.host}, {'host': this.host});
+            request.on('response', dojo.hitch(this, this._handleResponse, def));
+            request.end();
+
+        } catch(e) {
+            console.log(e);
+        }
     },
 
     getFriends : function(uid, access_token) {
@@ -35,7 +41,10 @@ exports.FacebookClient = dojo.declare(null, {
     },
 
     getInfo : function(uid, access_token) {
+        console.log("hit it");
         var def = new dojo.Deferred();
+        console.log(access_token);
+        console.log(uid);
         if (access_token && uid) {
             this._makeRequest('/' + uid, {'access_token' : access_token}, def);
         } else {
@@ -45,32 +54,36 @@ exports.FacebookClient = dojo.declare(null, {
     },
 
     getProfilePicture : function(uid, access_token) {
-        var def = new dojo.Deferred();        
+        var def = new dojo.Deferred();
         if (access_token && uid) {
-            var r = this.client.request('GET', '/' + uid + '/picture' + '?' + queryString.stringify({'access_token' : access_token}, '&', '=', false), {'host': this.host}, {'host': this.host});
-            r.on('response', dojo.hitch(this, function(res) {
-                var location = res.headers['location'];
-                if (location) {
-                    location = url.parse(location.replace(/q.jpg/, "n.jpg"));
-                    var client = http.createClient(location.port || 80, location.hostname, false);
-                    var fullpath = location.href.replace(location.protocol + '//' + location.host, '');
-                    var request = client.request("GET", fullpath, {host : location.host});
-                    request.addListener("response", function (response) {
-                        var buffer = '';
-                        response.setEncoding('binary');
-                        response.addListener("data", function (chunk) {
-                            buffer += chunk;
+            try {
+                var r = this.client.request('GET', '/' + uid + '/picture' + '?' + queryString.stringify({'access_token' : access_token}, '&', '=', false), {'host': this.host}, {'host': this.host});
+                r.on('response', dojo.hitch(this, function(res) {
+                    var location = res.headers['location'];
+                    if (location) {
+                        location = url.parse(location.replace(/q.jpg/, "n.jpg"));
+                        var client = http.createClient(location.port || 80, location.hostname, false);
+                        var fullpath = location.href.replace(location.protocol + '//' + location.host, '');
+                        var request = client.request("GET", fullpath, {host : location.host});
+                        request.addListener("response", function (response) {
+                            var buffer = '';
+                            response.setEncoding('binary');
+                            response.addListener("data", function (chunk) {
+                                buffer += chunk;
+                            });
+                            response.addListener("end", function () {
+                                def.callback(new Buffer(buffer, 'binary'), 'image/jpeg');
+                            });
                         });
-                        response.addListener("end", function () {
-                            def.callback(new Buffer(buffer, 'binary'), 'image/jpeg');
-                        });
-                    });
-                    request.end();
-                }else{
-                    def.callback(null, null);
-                }
-            }));
-            r.end();
+                        request.end();
+                    } else {
+                        def.callback(null, null);
+                    }
+                }));
+                r.end();
+            } catch(e) {
+                console.log(e);
+            }
         } else {
             def.errback();
         }
@@ -79,9 +92,11 @@ exports.FacebookClient = dojo.declare(null, {
 
 
     _handleResponse : function(def, response) {
+        console.log(response);
         response.setEncoding('utf8');
         var res = [];
         response.on('data', function (chunk) {
+            console.log(chunk);
             res.push(chunk);
         });
         response.on('end', function() {

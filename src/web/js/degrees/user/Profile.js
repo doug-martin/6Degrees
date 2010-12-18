@@ -38,6 +38,7 @@ dojo.declare('degrees.user.Profile', [dijit._Widget, dijit._Templated], {
             this.attr('name', user.name);
             if(user.dateOfBirth && user.email && user.sex)
             {
+                dojo.removeClass(this.infoTable, 'dijitHidden');
                 this.attr('birthday', degrees.formatDate(user.dateOfBirth, false));
                 this.attr('email', user.email);
                 this.attr('sex', user.sex);

@@ -5,89 +5,93 @@ var serverBase = exports;
 
 module.exports._ServerBase = dojo.declare(null, {
 
-	NOT_FOUND : "Not Found\n",
+    NOT_FOUND : "Not Found\n",
 
-	NOT_IMPLMENTED : "{method} not implemented for {path}\n",
+    NOT_IMPLMENTED : "{method} not implemented for {path}\n",
 
-	server : null,
+    server : null,
 
-	started : false,
+    started : false,
 
-	basePath : '/',
+    basePath : '/',
 
-	supportedOps : null,
+    supportedOps : null,
 
-	constructor : function(params) {
-		this.supportedOps = [];
-		dojo.mixin(this, params);
-	},
+    constructor : function(params) {
+        this.supportedOps = [];
+        dojo.mixin(this, params);
+    },
 
-	startup : function() {
-		if (!this.started) {
-			this.server = createServer(dojo.hitch(this, this._requestHandler));
-			this.started = true;
-		}
-	},
+    startup : function() {
+        if (!this.started) {
+            this.server = createServer(dojo.hitch(this, this._requestHandler));
+            this.started = true;
+        }
+    },
 
-	_requestHandler : function(req, res) {
-		if (dojo.indexOf(this.supportedOps, req.method) != -1) {
-			var handler = this._handleRequest(req, res);
-			if (handler) {
-				handler(req, res, this);
-			} else {
-				this.notImplemented(req, res);
-			}
-		} else {
-			this.notImplemented(req, res);
-		}
-	},
+    _requestHandler : function(req, res) {
+        if (dojo.indexOf(this.supportedOps, req.method) != -1) {
+            try {
+                var handler = this._handleRequest(req, res);
+                if (handler) {
+                    handler(req, res, this);
+                } else {
+                    this.notImplemented(req, res);
+                }
+            } catch(e) {
+                console.log(e);
+            }
+        } else {
+            this.notImplemented(req, res);
+        }
+    },
 
-	_matchParams : function(urlObj, params) {
-		var ret = [];
-		if (params && params != "") {
-			var query = urlObj.query || "";
-			ret = dojo.map((params || "").split(","), function(name) {
-				return query[name] || null
-			});
-		}        
-		return ret;
-	},
+    _matchParams : function(urlObj, params) {
+        var ret = [];
+        if (params && params != "") {
+            var query = urlObj.query || "";
+            ret = dojo.map((params || "").split(","), function(name) {
+                return query[name] || null
+            });
+        }
+        return ret;
+    },
 
-	getCookie : function(name, req) {
+    getCookie : function(name, req) {
 
-	},
+    },
 
-	removeCookie : function(res) {
+    removeCookie : function(res) {
 
-	},
+    },
 
-	// Stub for implementation.
-	_handleRequest : function(req, res) {
-	},
+    // Stub for implementation.
+    _handleRequest : function(req, res) {
+    },
 
-	notFound : function(req, res) {
-		var file = this.getErrorFile(404);
-		file(req, res);
-	},
+    notFound : function(req, res) {
+        var file = this.getErrorFile(404);
+        file(req, res);
+    },
 
-	notImplemented : function(req, res) {
-		var file = this.getErrorFile(405);
-		file(req, res);
-	},
+    notImplemented : function(req, res) {
+        var file = this.getErrorFile(405);
+        file(req, res);
+    },
 
-	notAuthorized : function(req, res) {
-		var file = this.getErrorFile(401);
-		file(req, res);
-	},
+    notAuthorized : function(req, res) {
+        var file = this.getErrorFile(401);
+        file(req, res);
+    },
 
-	listen : function(port, host) {
-		!this.started && this.startup();
-		this.server.listen(port, host);
-		sys.puts("Server at http://" + (host || "127.0.0.1") + ":" + port.toString() + "/");
-	},
+    listen : function(port, host) {
+        !this.started && this.startup();
+        this.server.listen(port, host);
+        sys.puts("Server at http://" + (host || "127.0.0.1") + ":" + port.toString() + "/");
+    },
 
-	shutDown : function() {
-		this.server.close();
-	}
+    shutDown : function() {
+        this.server.close();
+    }
 });
 
